@@ -51,19 +51,16 @@ namespace OrderWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "orderModels",
+                name: "categoryModels",
                 columns: table => new
                 {
-                    OrderId = table.Column<int>(type: "int", nullable: false)
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NumOrder = table.Column<int>(type: "int", nullable: false, defaultValueSql: "ABS(CHECKSUM(NEWID())) % 10000"),
-                    Descricao = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    Preco = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Service_Type = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_orderModels", x => x.OrderId);
+                    table.PrimaryKey("PK_categoryModels", x => x.CategoryId);
                 });
 
             migrationBuilder.CreateTable(
@@ -173,23 +170,26 @@ namespace OrderWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "categoryModels",
+                name: "orderModels",
                 columns: table => new
                 {
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                    OrderId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Service_Type = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    OrderModelOrderId = table.Column<int>(type: "int", nullable: false)
+                    NumOrder = table.Column<int>(type: "int", nullable: false, defaultValueSql: "ABS(CHECKSUM(NEWID())) % 10000"),
+                    NameFull = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(14,2)", precision: 14, scale: 2, nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_categoryModels", x => x.CategoryId);
+                    table.PrimaryKey("PK_orderModels", x => x.OrderId);
                     table.ForeignKey(
-                        name: "FK_categoryModels_orderModels_OrderModelOrderId",
-                        column: x => x.OrderModelOrderId,
-                        principalTable: "orderModels",
-                        principalColumn: "OrderId",
+                        name: "FK_orderModels_categoryModels_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "categoryModels",
+                        principalColumn: "CategoryId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -233,9 +233,9 @@ namespace OrderWebAPI.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_categoryModels_OrderModelOrderId",
-                table: "categoryModels",
-                column: "OrderModelOrderId");
+                name: "IX_orderModels_CategoryId",
+                table: "orderModels",
+                column: "CategoryId");
         }
 
         /// <inheritdoc />
@@ -257,7 +257,7 @@ namespace OrderWebAPI.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "categoryModels");
+                name: "orderModels");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -266,7 +266,7 @@ namespace OrderWebAPI.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "orderModels");
+                name: "categoryModels");
         }
     }
 }

@@ -12,7 +12,7 @@ using OrderWebAPI.Data;
 namespace OrderWebAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251229191311_Initial")]
+    [Migration("20251229193458_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -231,19 +231,11 @@ namespace OrderWebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrderModelOrderId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Service_Type")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("CategoryId");
-
-                    b.HasIndex("OrderModelOrderId");
 
                     b.ToTable("categoryModels");
                 });
@@ -256,24 +248,35 @@ namespace OrderWebAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
-                    b.Property<string>("Descricao")
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("NameFull")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("NumOrder")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValueSql("ABS(CHECKSUM(NEWID())) % 10000");
 
-                    b.Property<string>("Preco")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal>("Price")
+                        .HasPrecision(14, 2)
+                        .HasColumnType("decimal(14,2)");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("OrderId");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("orderModels");
                 });
@@ -329,20 +332,20 @@ namespace OrderWebAPI.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("OrderWebAPI.Models.CategoryModel", b =>
+            modelBuilder.Entity("OrderWebAPI.Models.OrderModel", b =>
                 {
-                    b.HasOne("OrderWebAPI.Models.OrderModel", "OrderModel")
-                        .WithMany("CategoryModel")
-                        .HasForeignKey("OrderModelOrderId")
+                    b.HasOne("OrderWebAPI.Models.CategoryModel", "CategoryModel")
+                        .WithMany("OrderModels")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("OrderModel");
+                    b.Navigation("CategoryModel");
                 });
 
-            modelBuilder.Entity("OrderWebAPI.Models.OrderModel", b =>
+            modelBuilder.Entity("OrderWebAPI.Models.CategoryModel", b =>
                 {
-                    b.Navigation("CategoryModel");
+                    b.Navigation("OrderModels");
                 });
 #pragma warning restore 612, 618
         }
