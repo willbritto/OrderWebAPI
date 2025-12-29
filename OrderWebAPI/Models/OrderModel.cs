@@ -8,9 +8,18 @@ public class OrderModel
     public string? Descricao { get; set; }
 
     public decimal Preco { get; set; }
+    public StatusOrderService Status { get; set; }
+
+    
+    public ICollection<CategoryModel> CategoryModel { get; set; }
 
 
-    public CategoryModel CategoryModel { get; set; }
+}
 
 
+public enum StatusOrderService
+{
+    Ausente,
+    Em_Andamento,
+    Concluido
 }
