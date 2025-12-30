@@ -12,7 +12,7 @@ using OrderWebAPI.Data;
 namespace OrderWebAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251230113936_Initial")]
+    [Migration("20251230172337_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -251,6 +251,9 @@ namespace OrderWebAPI.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CategoryModelCategoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(250)
@@ -276,7 +279,7 @@ namespace OrderWebAPI.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("CategoryModelCategoryId");
 
                     b.ToTable("orderModels");
                 });
@@ -336,9 +339,7 @@ namespace OrderWebAPI.Migrations
                 {
                     b.HasOne("OrderWebAPI.Models.CategoryModel", "CategoryModel")
                         .WithMany("OrderModels")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryModelCategoryId");
 
                     b.Navigation("CategoryModel");
                 });

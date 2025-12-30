@@ -180,17 +180,17 @@ namespace OrderWebAPI.Migrations
                     Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(14,2)", precision: 14, scale: 2, nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    CategoryModelCategoryId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_orderModels", x => x.OrderId);
                     table.ForeignKey(
-                        name: "FK_orderModels_categoryModels_CategoryId",
-                        column: x => x.CategoryId,
+                        name: "FK_orderModels_categoryModels_CategoryModelCategoryId",
+                        column: x => x.CategoryModelCategoryId,
                         principalTable: "categoryModels",
-                        principalColumn: "CategoryId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "CategoryId");
                 });
 
             migrationBuilder.CreateIndex(
@@ -233,9 +233,9 @@ namespace OrderWebAPI.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_orderModels_CategoryId",
+                name: "IX_orderModels_CategoryModelCategoryId",
                 table: "orderModels",
-                column: "CategoryId");
+                column: "CategoryModelCategoryId");
         }
 
         /// <inheritdoc />

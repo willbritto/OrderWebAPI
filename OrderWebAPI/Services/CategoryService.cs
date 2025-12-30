@@ -18,39 +18,78 @@ public class CategoryService : ICategoryService
 
     public async Task<IEnumerable<CategoryModel>> GetCategoryAsyncAll()
     {
-        var categorys = await _context.categoryModels.ToListAsync();
-        return categorys;
+        try
+        {
+            var categorys = await _context.categoryModels.Where(c => c.CategoryId == -1).ToListAsync();
+            return categorys;
+        }
+        catch (Exception ex)
+        {
+
+            throw new ArgumentException($"Erro ao buscar categorias : {ex.Message}");
+           
+        }
     }
 
     public async Task<CategoryModel> GetCategoryById(int id)
     {
-        var category = await _context.categoryModels.FirstOrDefaultAsync(c => c.CategoryId == id);
-        return category;
-        
+        try
+        {
+            var category = await _context.categoryModels.FirstOrDefaultAsync(c => c.CategoryId == id);
+            return category;
+        }
+        catch (Exception ex)
+        {
+
+            throw new ArgumentException($"Erro ao buscar categoria do ID [{id}] : {ex.Message}");
+        }
     }
 
     public async Task<CategoryModel> CreateCategory(CategoryModel model)
     {
-        if (model is null)
-            throw new ArgumentNullException(nameof(model));
 
-        _context.Add(model);
-        await _context.SaveChangesAsync();
+        try
+        {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
 
-        return model;
+            _context.Add(model);
+            await _context.SaveChangesAsync();
+
+            return model;
+
+        }
+        catch (Exception ex)
+        {
+
+            throw new ArgumentException($"Erro ao tentar criar nova categoria : {ex.Message}");
+        }
+
+        
     }
 
     public async Task<CategoryModel> DeleteCategory(int id)
     {
-        var category = await _context.categoryModels.FindAsync(id);
 
-        if (category is null)
-            throw new ArgumentNullException(nameof(category));
+        try
+        {
+            var category = await _context.categoryModels.FirstOrDefaultAsync(c => c.CategoryId == id);
 
-        _context.Remove(category);
-        await _context.SaveChangesAsync();
+            if (category == null)
+                return null;
 
-        return category;
+            _context.Remove(category);
+            await _context.SaveChangesAsync();
+
+            return category;
+        }
+        catch (Exception ex )
+        {
+
+            throw new ArgumentException($"Erro ao tentar deletar ID [{id}] : {ex.Message}");
+        }
+
+       
     }
 
 }

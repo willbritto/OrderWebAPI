@@ -1,4 +1,6 @@
-﻿namespace OrderWebAPI.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace OrderWebAPI.Models;
 
 public class OrderModel
 {
@@ -13,7 +15,9 @@ public class OrderModel
     public StatusOrderService Status { get; set; }
 
     public int CategoryId { get; set; }
-    public CategoryModel CategoryModel { get; set; }
+
+    [JsonIgnore]
+    public CategoryModel? CategoryModel { get; set; }
 
 }
 

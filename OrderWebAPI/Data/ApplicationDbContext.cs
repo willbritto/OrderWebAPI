@@ -32,7 +32,7 @@ public class ApplicationDbContext : IdentityDbContext
 
 
         //Foreign Key
-        builder.Entity<OrderModel>().HasOne<CategoryModel>(o => o.CategoryModel).WithMany(c => c.OrderModels).HasForeignKey(c => c.CategoryId);
+        //builder.Entity<OrderModel>().HasOne<CategoryModel>(o => o.CategoryModel).WithMany(c => c.OrderModels).HasForeignKey(c => c.CategoryId);
 
 
 

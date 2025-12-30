@@ -248,6 +248,9 @@ namespace OrderWebAPI.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CategoryModelCategoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(250)
@@ -273,7 +276,7 @@ namespace OrderWebAPI.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("CategoryModelCategoryId");
 
                     b.ToTable("orderModels");
                 });
@@ -333,9 +336,7 @@ namespace OrderWebAPI.Migrations
                 {
                     b.HasOne("OrderWebAPI.Models.CategoryModel", "CategoryModel")
                         .WithMany("OrderModels")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryModelCategoryId");
 
                     b.Navigation("CategoryModel");
                 });

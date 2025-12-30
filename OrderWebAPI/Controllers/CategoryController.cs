@@ -41,12 +41,8 @@ namespace OrderWebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            var category = await _categoryService.DeleteCategory(id);
+            var category = await _categoryService.DeleteCategory(id);            
 
-            //if (category  || category == )            
-            //    return NotFound($"ID[{id}] não existente/ou cadastrado no banco de dados .. ");
-            
-            
             return Ok(new { category ,  message = $"ID[{id}] deletado com sucesso .." });
 
         }
