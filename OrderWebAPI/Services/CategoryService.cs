@@ -20,7 +20,7 @@ public class CategoryService : ICategoryService
     {
         try
         {
-            var categorys = await _context.categoryModels.Where(c => c.CategoryId == -1).ToListAsync();
+            var categorys = await _context.categoryModels.ToListAsync();
             return categorys;
         }
         catch (Exception ex)
