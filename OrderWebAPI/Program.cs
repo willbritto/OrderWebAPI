@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OrderWebAPI.Data;
+using OrderWebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +11,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddTransient<IOrderService, OrderService>();
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+
 
 //Connection SQLServer
 var connectionStringSQL = builder.Configuration.GetConnectionString("DefaultConnectionDB");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionStringSQL));
+
 
 
 var app = builder.Build();

@@ -12,7 +12,7 @@ using OrderWebAPI.Data;
 namespace OrderWebAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251229193458_Initial")]
+    [Migration("20251230113936_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
