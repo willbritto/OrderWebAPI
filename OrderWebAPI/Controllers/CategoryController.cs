@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderWebAPI.Models;
 using OrderWebAPI.Services;
@@ -31,13 +32,13 @@ namespace OrderWebAPI.Controllers
             var category = await _categoryService.GetCategoryById(id);
             return Ok(category);
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateCategory(CategoryModel categoryModel)
         {
             return Ok(await _categoryService.CreateCategory(categoryModel));
         }
-
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {

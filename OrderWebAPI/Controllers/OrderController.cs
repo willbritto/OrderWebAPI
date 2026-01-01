@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderWebAPI.Models;
 using OrderWebAPI.Services;
@@ -34,14 +35,14 @@ namespace OrderWebAPI.Controllers
             return Ok(order);
         }
 
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateOrder(OrderModel orderModel) 
         {
             return Ok(await _serviceOrder.CreateOrder(orderModel));
             
         }
-
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(OrderModel orderModel)
         {
@@ -49,7 +50,7 @@ namespace OrderWebAPI.Controllers
             return Ok(await _serviceOrder.UpdateOrder(orderModel));
 
         }
-
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id) 
         {
