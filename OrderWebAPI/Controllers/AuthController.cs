@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using OrderWebAPI.DTOs;
 using OrderWebAPI.Models;
 using OrderWebAPI.Services;
@@ -16,15 +17,47 @@ public class AuthController : ControllerBase
 
     private readonly UserManager<ApplicationUser> _useManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly ITokenService _tokenService;
     private readonly IConfiguration _config;
 
-    public AuthController(UserManager<ApplicationUser> useManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService, IConfiguration config)
+    public AuthController(UserManager<ApplicationUser> useManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService, IConfiguration config, RoleManager<IdentityRole> roleManager)
     {
         _useManager = useManager;
         _signInManager = signInManager;
         _tokenService = tokenService;
         _config = config;
+        _roleManager = roleManager;
+    }
+
+
+    [HttpPost("Register")]
+    public async Task<IActionResult> Register(RegisterDTO registerDTO) 
+    {
+        var usersExists = await _useManager.FindByNameAsync(registerDTO.Username);
+        if (usersExists != null)
+            return BadRequest(new { Status = "Error", Message = "Usuario já existe" });
+
+        ApplicationUser user = new()
+        {
+            Email = registerDTO.Email,
+            UserName = registerDTO.Username,
+            SecurityStamp = Guid.NewGuid().ToString()
+
+        };
+
+        var result = await _useManager.CreateAsync(user, registerDTO.Password);
+        if (!result.Succeeded)
+            return BadRequest(result.Errors);
+
+        if (!await _roleManager.RoleExistsAsync(registerDTO.Role))
+            await _roleManager.CreateAsync(new IdentityRole(registerDTO.Role));
+
+        if (!string.IsNullOrEmpty(registerDTO.Role))
+            await _useManager.AddToRoleAsync(user, registerDTO.Role);
+
+        return Ok(new { Status = "Success", Message = "Usuario registrado com sucesso ..." });
+
     }
 
 

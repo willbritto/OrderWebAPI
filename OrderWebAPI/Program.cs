@@ -17,7 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 
-//Autorizacao para acesso dos endipoints do 
+//Autorizacao para acesso dos endpoints do controllador
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "APIOrder", Version = "v1" });
@@ -28,7 +28,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = @"Cabeçalho de autorização JWT usando o esquema Bearer.
+        Description = @"Preencha o cabeçalho de autorização JWT usando o esquema Bearer.
                         Digite 'Bearer' [Espaço]. Exemplo: 'Bearer 12345abcdef'"
     });
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
