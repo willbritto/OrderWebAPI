@@ -6,6 +6,7 @@ using OrderWebAPI.Services;
 
 namespace OrderWebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
@@ -32,13 +33,13 @@ namespace OrderWebAPI.Controllers
             var category = await _categoryService.GetCategoryById(id);
             return Ok(category);
         }
-        [Authorize]
+        
         [HttpPost]
         public async Task<IActionResult> CreateCategory(CategoryModel categoryModel)
         {
             return Ok(await _categoryService.CreateCategory(categoryModel));
         }
-        [Authorize]
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {

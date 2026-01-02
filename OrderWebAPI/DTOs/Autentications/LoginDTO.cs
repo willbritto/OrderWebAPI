@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OrderWebAPI.DTOs
+namespace OrderWebAPI.DTOs.Autentications
 {
     public class LoginDTO
     {

@@ -12,6 +12,8 @@ public class OrderModel
     public string Description { get; set; }
 
     public decimal Price { get; set; }
+
+    public DateTime Date { get; set; }
     public StatusOrderService Status { get; set; }
 
     public int CategoryId { get; set; }

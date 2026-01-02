@@ -85,6 +85,7 @@ builder.Services.AddAuthentication(options =>
 
 //Entities e Services
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IPrintService, PrintService>();
 
 
 var app = builder.Build();

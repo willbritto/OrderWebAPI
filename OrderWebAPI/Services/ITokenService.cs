@@ -9,5 +9,7 @@ namespace OrderWebAPI.Services
 
         string GenerateRefreshToken();
 
+        ClaimsPrincipal GetPrincipalFromExpireToken(string token, IConfiguration _config);
+
     }
 }
