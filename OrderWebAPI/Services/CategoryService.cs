@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Any;
 using OrderWebAPI.Data;
+using OrderWebAPI.DTOs.EntitieDTOs;
 using OrderWebAPI.Models;
 
 namespace OrderWebAPI.Services;
@@ -26,7 +27,7 @@ public class CategoryService : ICategoryService
         catch (Exception ex)
         {
 
-            throw new ArgumentException($"Erro ao buscar categorias : {ex.Message}");
+            throw new ArgumentException($"Error when searching categories: {ex.Message}");
            
         }
     }
@@ -41,7 +42,7 @@ public class CategoryService : ICategoryService
         catch (Exception ex)
         {
 
-            throw new ArgumentException($"Erro ao buscar categoria do ID [{id}] : {ex.Message}");
+            throw new ArgumentException($"Error retrieving category from ID [{id}]: {ex.Message}");
         }
     }
 
@@ -62,7 +63,7 @@ public class CategoryService : ICategoryService
         catch (Exception ex)
         {
 
-            throw new ArgumentException($"Erro ao tentar criar nova categoria : {ex.Message}");
+            throw new ArgumentException($"Error while trying to create a new category: {ex.Message}");
         }
 
         
@@ -86,7 +87,7 @@ public class CategoryService : ICategoryService
         catch (Exception ex )
         {
 
-            throw new ArgumentException($"Erro ao tentar deletar ID [{id}] : {ex.Message}");
+            throw new ArgumentException($"Error while trying to delete ID [{id}]: {ex.Message}");
         }
 
        

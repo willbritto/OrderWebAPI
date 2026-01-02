@@ -23,7 +23,7 @@ public class OrderService : IOrderService
         }
         catch (Exception ex)
         {
-            throw new ArgumentException ($"Erro ao tentar buscar ordens : {ex.Message}");
+            throw new ArgumentException ($"Error while trying to retrieve orders: {ex.Message}");
         }
     }
 
@@ -36,7 +36,7 @@ public class OrderService : IOrderService
         }
         catch (Exception ex)
         {
-            throw new ArgumentException($"Erro ao tentar buscar ordem do [{id}]  : {ex.Message}");
+            throw new ArgumentException($"Error while trying to retrieve order of [{id}]: {ex.Message}");
         }
     }
 
@@ -56,7 +56,7 @@ public class OrderService : IOrderService
         catch (Exception ex)
         {
 
-            throw new ArgumentException($"Erro ao tentar criar novas ordem : {ex.Message}");
+            throw new ArgumentException($"Error while trying to create new order: {ex.Message}");
         }
 
 
@@ -85,7 +85,7 @@ public class OrderService : IOrderService
         catch (Exception ex)
         {
 
-            throw new ArgumentException($"Erro ao tentar atualizar ordem : {ex.Message}");
+            throw new ArgumentException($"Error while trying to update order: {ex.Message}");
         }
 
         
@@ -111,7 +111,7 @@ public class OrderService : IOrderService
         catch (Exception ex)
         {
 
-            throw new ArgumentException($"Erro ao tentar deletar ordem : {ex.Message}");
+            throw new ArgumentException($"Error while trying to delete order: {ex.Message}");
         }
 
         

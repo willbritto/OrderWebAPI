@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.RateLimiting;
 using OrderWebAPI.DTOs.Autentications;
 using OrderWebAPI.Models;
 using OrderWebAPI.Services;
@@ -9,6 +11,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace OrderWebAPI.Controllers;
+
+
 
 [Route("api/[controller]")]
 [ApiController]
@@ -30,6 +34,7 @@ public class AuthController : ControllerBase
         _roleManager = roleManager;
     }
 
+    [EnableRateLimiting("fixedRL")]
     /// <summary>
     /// Registers a new user account with the specified registration details.
     /// </summary>
@@ -68,17 +73,19 @@ public class AuthController : ControllerBase
         return Ok(new { Status = "Success", Message = "User successfully registered ..." });
 
     }
-
-/// <summary>
-/// Authenticates a user with the provided credentials and issues a new access token and refresh token upon successful
-/// login.
-/// </summary>
-/// <remarks>The returned access token includes the user's roles and claims. The refresh token is stored with the
-/// user and can be used to obtain new access tokens after expiration. The method does not expose detailed error
-/// information for failed logins to avoid leaking sensitive data.</remarks>
-/// <param name="loginDTO">An object containing the user's login credentials. Must include a valid username and password.</param>
-/// <returns>An HTTP 200 response containing the access token, refresh token, and token expiration time if authentication is
-/// successful; otherwise, an HTTP 401 response indicating invalid credentials or user not found.</returns>
+    
+    [EnableCors]
+    [EnableRateLimiting("fixedRL")]
+    /// <summary>
+    /// Authenticates a user with the provided credentials and issues a new access token and refresh token upon successful
+    /// login.
+    /// </summary>
+    /// <remarks>The returned access token includes the user's roles and claims. The refresh token is stored with the
+    /// user and can be used to obtain new access tokens after expiration. The method does not expose detailed error
+    /// information for failed logins to avoid leaking sensitive data.</remarks>
+    /// <param name="loginDTO">An object containing the user's login credentials. Must include a valid username and password.</param>
+    /// <returns>An HTTP 200 response containing the access token, refresh token, and token expiration time if authentication is
+    /// successful; otherwise, an HTTP 401 response indicating invalid credentials or user not found.</returns>
     [HttpPost("Login")]
     public async Task<IActionResult> Login(LoginDTO loginDTO)
     {

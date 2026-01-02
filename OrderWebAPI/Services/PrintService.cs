@@ -19,13 +19,14 @@ namespace OrderWebAPI.Services
             gfx.DrawString($"Data : {orderModel.Date}" , font, XBrushes.Black, new XPoint(40, 100));
 
             int y = 140;
+
             gfx.DrawString($"Descrição : {orderModel.Description}", font, XBrushes.Black, new XPoint(40, y));
             y += 30;
             gfx.DrawString($"Preço : {orderModel.Price:C}", font, XBrushes.Black, new XPoint(40, y));
             y += 30;
             gfx.DrawString($"Status : {orderModel.Status}", font, XBrushes.Black, new XPoint(40, y));
             y += 30;
-            gfx.DrawString($"Categoria : {orderModel.CategoryModel?.Service_Type}", font, XBrushes.Black, new XPoint(40, y));
+            gfx.DrawString($"Categoria : {orderModel.CategoryId}", font, XBrushes.Black, new XPoint(40, y));
 
             document.Save(ms, false);
             return ms.ToArray();

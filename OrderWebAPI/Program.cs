@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -6,7 +7,9 @@ using Microsoft.OpenApi.Models;
 using OrderWebAPI.Data;
 using OrderWebAPI.Models;
 using OrderWebAPI.Services;
+using System.Reflection;
 using System.Text;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +23,23 @@ builder.Services.AddEndpointsApiExplorer();
 //Autorizacao para acesso dos endpoints do controllador
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "APIOrder", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo 
+    { 
+      Title = "APIOrder",
+      Version = "v1",
+      Description = "Venda e Orçamentos para serviços",
+      Contact = new OpenApiContact 
+      {
+          Name = "Ailson",
+          Email = "alfatechvaa@gmail.com",
+      }
+    
+    });
+
+    //XML
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
         Name = "Authorization",
@@ -31,6 +50,8 @@ builder.Services.AddSwaggerGen(c =>
         Description = @"Preencha o cabeçalho de autorização JWT usando o esquema Bearer.
                         Digite 'Bearer' [Espaço]. Exemplo: 'Bearer 12345abcdef'"
     });
+
+
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -47,7 +68,9 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
+//Entities e Services
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IPrintService, PrintService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 
@@ -61,9 +84,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-
 //JWT Autentication 
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = "JwtBearer";
@@ -79,14 +100,31 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["JWT:Issuer"],
         ValidAudience = builder.Configuration["JWT:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
-    };
+    });
+
+
+//CORS
+builder.Services.AddCors(options => 
+{
+    options.AddPolicy("AllSpecificOrign", 
+        policy => 
+        {
+            policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); //CORS aberto apenas para teste da aplicacão.
+            //policy.WithOrigins("https://localhost:7175", "http://localhost:5192").AllowAnyHeader().AllowAnyMethod(); //Obrigatoriamente utilizar esse CORS em produção.
+        });
 });
 
-
-//Entities e Services
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IPrintService, PrintService>();
-
+//Rate Limiting
+builder.Services.AddRateLimiter(op => 
+{
+    op.AddFixedWindowLimiter("fixedRL", RateLimiterOptions => 
+    {
+        RateLimiterOptions.PermitLimit = 5;
+        RateLimiterOptions.Window = TimeSpan.FromSeconds(10);
+        RateLimiterOptions.QueueLimit = 2;
+        RateLimiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    });
+});
 
 var app = builder.Build();
 
@@ -94,16 +132,20 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => 
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "APIOrder");
+    });
 }
+app.UseRateLimiter();
 
+app.MapControllers().RequireRateLimiting("fixedRL");
 
 app.UseHttpsRedirection();
 
-////Mapeamento de todos os endpoints do identity
-//app.MapGroup("/identity/").MapIdentityApi<IdentityUser>();
 
 
+app.UseCors(); //CORS
 app.UseAuthentication();
 app.UseAuthorization();
 
