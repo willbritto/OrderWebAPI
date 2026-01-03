@@ -68,7 +68,7 @@ public class OrderService : IOrderService
 
         try
         {
-            var order = await _context.orderModels.FirstOrDefaultAsync(o => o.OrderId == id);
+            var order = await _context.orderModels.FirstOrDefaultAsync(o => o.OrderId == orderModel.OrderId);
 
             if (order == null)
                 return null;

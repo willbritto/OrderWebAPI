@@ -36,8 +36,9 @@ namespace OrderWebAPI.Controllers
         /// <param name="id">The unique identifier of the order to print. Must correspond to an existing order.</param>
         /// <returns>An <see cref="FileContentResult"/> containing the PDF file of the order if found; otherwise, a <see
         /// cref="NotFoundResult"/> if the order does not exist.</returns>
+        
         [Authorize]
-        [HttpGet("{id}/print")]
+        [HttpGet("PrinterOrder/{id}")]
         public async Task<IActionResult> PrinterOrder(int id)
         {
             var order = await _serviceOrder.GetOrderById(id);
@@ -54,7 +55,8 @@ namespace OrderWebAPI.Controllers
         /// <returns>An <see cref="IActionResult"/> containing a collection of all orders. The response has a status code of 200
         /// (OK) with the list of orders in the response body.</returns>
         
-        [HttpGet]
+        
+        [HttpGet("GetAllOrders")]
         public async Task<IActionResult> GetOrderAll() 
         {
             return Ok(await _serviceOrder.GetAllOrder());
@@ -68,7 +70,7 @@ namespace OrderWebAPI.Controllers
         /// the order was not found.</returns>
         
         [Authorize]
-        [HttpGet("{id}")]
+        [HttpGet("GetOrderById/{id}")]
         public async Task<IActionResult> GetOrderById(int id)
         {
             var order = await _serviceOrder.GetOrderById(id);
@@ -85,7 +87,7 @@ namespace OrderWebAPI.Controllers
         /// created order details if successful.</returns>
 
         [Authorize]
-        [HttpPost]
+        [HttpPost("CreateOrder")]
         public async Task<IActionResult> CreateOrder(OrderDTO orderDTO) 
         {
             var entityOrder = _mapper.Map<OrderModel>(orderDTO);
@@ -107,7 +109,7 @@ namespace OrderWebAPI.Controllers
         /// cref="OkObjectResult"/> with the updated order if successful.</returns>
         
         [Authorize]
-        [HttpPut("{id}")]
+        [HttpPut("UpdateOrder/{id}")]
         public async Task<IActionResult> Put(int id , OrderDTO orderDTO)
         {
 
@@ -124,7 +126,7 @@ namespace OrderWebAPI.Controllers
         /// <returns>An IActionResult containing the deleted order and a confirmation message if the deletion is successful.</returns>
         
         [Authorize]
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteOrder/{id}")]
         public async Task<IActionResult> DeleteOrder(int id) 
         {
             var order = await _serviceOrder.DeleteOrder(id);  
