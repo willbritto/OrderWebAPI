@@ -63,12 +63,12 @@ public class OrderService : IOrderService
     }
 
 
-    public async Task<OrderModel> UpdateOrder(OrderModel orderModel)
+    public async Task<OrderModel> UpdateOrder(int id, OrderModel orderModel)
     {
 
         try
         {
-            var order = await _context.orderModels.FirstOrDefaultAsync(o => o.OrderId == orderModel.OrderId);
+            var order = await _context.orderModels.FirstOrDefaultAsync(o => o.OrderId == id);
 
             if (order == null)
                 return null;

@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OrderWebAPI.Data;
+using OrderWebAPI.DTOs.Mappings;
 using OrderWebAPI.Models;
 using OrderWebAPI.Services;
 using System.Reflection;
@@ -74,6 +75,9 @@ builder.Services.AddScoped<IPrintService, PrintService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 
+//AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingsProfile));
+
 
 //Connection SQLServer
 var connectionStringSQL = builder.Configuration.GetConnectionString("DefaultConnectionDB");
@@ -99,9 +103,9 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["JWT:Issuer"],
         ValidAudience = builder.Configuration["JWT:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
-    });
-
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"])),
+    };
+});
 
 //CORS
 builder.Services.AddCors(options => 

@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using OrderWebAPI.DTOs.EntitieDTOs;
 using OrderWebAPI.Models;
 using OrderWebAPI.Services;
 
@@ -17,10 +19,12 @@ namespace OrderWebAPI.Controllers
     {
 
         private readonly ICategoryService _categoryService;
+        private readonly IMapper _mapper;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService , IMapper mapper)
         {
             _categoryService = categoryService;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -55,9 +59,11 @@ namespace OrderWebAPI.Controllers
         /// created category data if successful.</returns>
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> CreateCategory(CategoryModel categoryModel)
+        public async Task<IActionResult> CreateCategory(CategoryDTO categoryDTO)
         {
-            return Ok(await _categoryService.CreateCategory(categoryModel));
+            var categoryEntity = _mapper.Map<CategoryModel>(categoryDTO);
+            var result = await _categoryService.CreateCategory(categoryEntity);
+            return Ok(new { Data = result, Status = "Success", Message = "Category created successfully" });
         }
         /// <summary>
         /// Deletes the category with the specified identifier.

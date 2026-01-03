@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using OrderWebAPI.DTOs.EntitieDTOs;
 using OrderWebAPI.Models;
 using OrderWebAPI.Services;
 
@@ -18,12 +20,14 @@ namespace OrderWebAPI.Controllers
 
         private readonly IOrderService _serviceOrder;
         private readonly IPrintService _printService;
+        private readonly IMapper _mapper;
 
-        public OrderController(IOrderService orderService, IPrintService printService)
+        public OrderController(IOrderService orderService, IPrintService printService , IMapper mapper)
         {
 
             _serviceOrder = orderService;
             _printService = printService;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -82,9 +86,12 @@ namespace OrderWebAPI.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> CreateOrder(OrderModel orderModel) 
+        public async Task<IActionResult> CreateOrder(OrderDTO orderDTO) 
         {
-            return Ok(await _serviceOrder.CreateOrder(orderModel));
+            var entityOrder = _mapper.Map<OrderModel>(orderDTO);
+            var result = await _serviceOrder.CreateOrder(entityOrder);
+
+            return Ok(new { Data = result,  Status  = "Success" , Message = "Order created successfully"});
             
         }
 
@@ -101,10 +108,12 @@ namespace OrderWebAPI.Controllers
         
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(OrderModel orderModel)
+        public async Task<IActionResult> Put(int id , OrderDTO orderDTO)
         {
 
-            return Ok(await _serviceOrder.UpdateOrder(orderModel));
+            var entityOrder = _mapper.Map<OrderModel>(orderDTO);
+            var result = await _serviceOrder.UpdateOrder(id, entityOrder);
+            return Ok(new { Data = result, Status = "Success", Message = "Order updated successfully" });
 
         }
 
@@ -118,8 +127,7 @@ namespace OrderWebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id) 
         {
-            var order = await _serviceOrder.DeleteOrder(id);           
-
+            var order = await _serviceOrder.DeleteOrder(id);  
             return Ok(new { order, message = $"D[{id}] successfully deleted ..." });
         }
 
