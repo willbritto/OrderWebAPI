@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="OrderWebAPI.Tests/OrderWebAPI.Tests.csproj" Id="8f1b53fa-ba6a-41ad-9a88-d77b71898bea" />
   <Project Path="OrderWebAPI/OrderWebAPI.csproj" />
 </Solution>
