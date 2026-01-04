@@ -24,14 +24,17 @@ public class AuthController : ControllerBase
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly ITokenService _tokenService;
     private readonly IConfiguration _config;
+    private readonly ILogger<AuthController> _logger;
 
-    public AuthController(UserManager<ApplicationUser> useManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService, IConfiguration config, RoleManager<IdentityRole> roleManager)
+    public AuthController(UserManager<ApplicationUser> useManager, SignInManager<ApplicationUser> signInManager,
+        ITokenService tokenService, IConfiguration config, RoleManager<IdentityRole> roleManager, ILogger<AuthController> logger)
     {
         _useManager = useManager;
         _signInManager = signInManager;
         _tokenService = tokenService;
         _config = config;
         _roleManager = roleManager;
+        _logger = logger;
     }
 
     [EnableRateLimiting("fixedRL")]
@@ -46,8 +49,12 @@ public class AuthController : ControllerBase
     /// <returns>An <see cref="IActionResult"/> indicating the result of the registration operation. Returns a success response
     /// if the user is registered successfully; otherwise, returns an error response with details.</returns>
     [HttpPost("Register")]
-    public async Task<IActionResult> Register(RegisterDTO registerDTO) 
+    public async Task<IActionResult> Register(RegisterDTO registerDTO)
     {
+        _logger.LogInformation("\n =============================");
+        _logger.LogInformation("\n == Register new user /Register == \n");
+        _logger.LogInformation(" ============================= \n");
+
         var usersExists = await _useManager.FindByNameAsync(registerDTO.Username);
         if (usersExists != null)
             return BadRequest(new { Status = "Error", Message = " User already exists .." });
@@ -73,7 +80,7 @@ public class AuthController : ControllerBase
         return Ok(new { Status = "Success", Message = "User successfully registered ..." });
 
     }
-    
+
     [EnableCors]
     [EnableRateLimiting("fixedRL")]
     /// <summary>
@@ -89,8 +96,12 @@ public class AuthController : ControllerBase
     [HttpPost("Login")]
     public async Task<IActionResult> Login(LoginDTO loginDTO)
     {
+
+        _logger.LogInformation("\n =============================");
+        _logger.LogInformation(" == Login user /Login == ");
+        _logger.LogInformation(" ============================= \n");
         var user = await _useManager.FindByNameAsync(loginDTO.Username);
-        if (user == null)  
+        if (user == null)
             return Unauthorized("User not found ...");
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
@@ -113,7 +124,7 @@ public class AuthController : ControllerBase
         //Gerar token
         var token = _tokenService.GenerateAccessToken(authClaims, _config);
         var refreshToken = _tokenService.GenerateRefreshToken();
-        
+
 
         //atualizar refresh token no usuario
         int.TryParse(_config["JWT:RefreshTokenValidityInMinutes"], out int refreshTokenValidityInMinute);
@@ -130,6 +141,6 @@ public class AuthController : ControllerBase
 
     }
 
-              
+
 
 }

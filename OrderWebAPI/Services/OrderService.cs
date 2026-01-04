@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using OrderWebAPI.Data;
+using OrderWebAPI.DTOs.EntitieDTOs;
 using OrderWebAPI.Models;
+using Serilog;
 
 namespace OrderWebAPI.Services;
 
@@ -44,7 +46,7 @@ public class OrderService : IOrderService
     {
         try
         {
-
+            
             if (model == null)
                 return null;
 
@@ -56,7 +58,9 @@ public class OrderService : IOrderService
         catch (Exception ex)
         {
 
-            throw new ArgumentException($"Error while trying to create new order: {ex.Message}");
+            Log.Error(ex, "Error save entity");
+            throw;
+            
         }
 
 

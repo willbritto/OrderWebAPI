@@ -8,6 +8,8 @@ using OrderWebAPI.Data;
 using OrderWebAPI.DTOs.Mappings;
 using OrderWebAPI.Models;
 using OrderWebAPI.Services;
+using OrderWebAPI.Services.Logs;
+using Serilog;
 using System.Reflection;
 using System.Text;
 using System.Threading.RateLimiting;
@@ -79,9 +81,32 @@ builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddAutoMapper(typeof(MappingsProfile));
 
 
+//SeriLog
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .Enrich.With(new ThreadIdEnricher())
+    .WriteTo.File("log_OrderAPI.txt")
+    .WriteTo.Console(outputTemplate : "{Timestamp:HH:mm} [{Level}] ({ThreadId}) {Message}{NewLine}{Exception}")
+    .CreateLogger();
+
+//Debugging and Diagnostics
+var file = File.CreateText("Deb_Diagnostic.txt");
+Serilog.Debugging.SelfLog.Enable(TextWriter.Synchronized(file));
+
+builder.Host.UseSerilog();
+
+//Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+//Log.Information("An, there you are");
+//Log.Logger = new LoggerConfiguration().CreateLogger();
+//Log.Information("No one listens to me");
+
+//Log.CloseAndFlush();
+
 //Connection SQLServer
 var connectionStringSQL = builder.Configuration.GetConnectionString("DefaultConnectionDB");
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionStringSQL));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionStringSQL)
+.EnableSensitiveDataLogging()
+.LogTo(Console.WriteLine, LogLevel.Information));
 
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()

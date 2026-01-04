@@ -13,5 +13,7 @@ namespace OrderWebAPI.DTOs.EntitieDTOs
         public DateTime Date { get; set; }
 
         public StatusOrderService Status { get; set; }
+
+        public int CategoryId { get; set; }
     }
 }

@@ -10,7 +10,7 @@ using OrderWebAPI.Services;
 
 namespace OrderWebAPI.Controllers
 {
-    
+
     [EnableCors]
     [EnableRateLimiting("fixedRL")]
     [Route("api/[controller]")]
@@ -21,13 +21,15 @@ namespace OrderWebAPI.Controllers
         private readonly IOrderService _serviceOrder;
         private readonly IPrintService _printService;
         private readonly IMapper _mapper;
+        private readonly ILogger<OrderController> _logger;
 
-        public OrderController(IOrderService orderService, IPrintService printService , IMapper mapper)
+        public OrderController(IOrderService orderService, IPrintService printService, IMapper mapper, ILogger<OrderController> logger)
         {
 
             _serviceOrder = orderService;
             _printService = printService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         /// <summary>
@@ -36,11 +38,15 @@ namespace OrderWebAPI.Controllers
         /// <param name="id">The unique identifier of the order to print. Must correspond to an existing order.</param>
         /// <returns>An <see cref="FileContentResult"/> containing the PDF file of the order if found; otherwise, a <see
         /// cref="NotFoundResult"/> if the order does not exist.</returns>
-        
+
         [Authorize]
         [HttpGet("PrinterOrder/{id}")]
         public async Task<IActionResult> PrinterOrder(int id)
         {
+            _logger.LogInformation("\n =============================");
+            _logger.LogInformation($"\n == Printer order ID /PrinterOrder/{id} == \n");
+            _logger.LogInformation(" ============================= \n");
+
             var order = await _serviceOrder.GetOrderById(id);
             if (order == null)
                 return NotFound($"It was not possible to print the order because the ID [{id}] does not exist or is not registered in the database.");
@@ -54,11 +60,15 @@ namespace OrderWebAPI.Controllers
         /// </summary>
         /// <returns>An <see cref="IActionResult"/> containing a collection of all orders. The response has a status code of 200
         /// (OK) with the list of orders in the response body.</returns>
-        
-        
+
+
         [HttpGet("GetAllOrders")]
-        public async Task<IActionResult> GetOrderAll() 
+        public async Task<IActionResult> GetOrderAll()
         {
+            _logger.LogInformation("\n =============================");
+            _logger.LogInformation("\n == Filter all orders /GetAllOrders == \n");
+            _logger.LogInformation(" ============================= \n");
+
             return Ok(await _serviceOrder.GetAllOrder());
         }
 
@@ -68,11 +78,15 @@ namespace OrderWebAPI.Controllers
         /// <param name="id">The unique identifier of the order to retrieve.</param>
         /// <returns>An <see cref="IActionResult"/> containing the order details if found; otherwise, a result indicating that
         /// the order was not found.</returns>
-        
+
         [Authorize]
         [HttpGet("GetOrderById/{id}")]
         public async Task<IActionResult> GetOrderById(int id)
         {
+            _logger.LogInformation("\n =============================");
+            _logger.LogInformation($"\n == Filter order by ID only /GetOrderById/{id} == \n");
+            _logger.LogInformation(" ============================= \n");
+
             var order = await _serviceOrder.GetOrderById(id);
             return Ok(order);
         }
@@ -88,13 +102,17 @@ namespace OrderWebAPI.Controllers
 
         [Authorize]
         [HttpPost("CreateOrder")]
-        public async Task<IActionResult> CreateOrder(OrderDTO orderDTO) 
+        public async Task<IActionResult> CreateOrder(OrderDTO orderDTO)
         {
+            _logger.LogInformation("\n =============================");
+            _logger.LogInformation("\n == Create new order /CreateOrder == \n");
+            _logger.LogInformation(" ============================= \n");
+
             var entityOrder = _mapper.Map<OrderModel>(orderDTO);
             var result = await _serviceOrder.CreateOrder(entityOrder);
 
-            return Ok(new { Data = result,  Status  = "Success" , Message = "Order created successfully"});
-            
+            return Ok(new { Data = result, Status = "Success", Message = "Order created successfully" });
+
         }
 
         /// <summary>
@@ -107,11 +125,14 @@ namespace OrderWebAPI.Controllers
         /// null.</param>
         /// <returns>An <see cref="IActionResult"/> indicating the result of the update operation. Returns <see
         /// cref="OkObjectResult"/> with the updated order if successful.</returns>
-        
+
         [Authorize]
         [HttpPut("UpdateOrder/{id}")]
-        public async Task<IActionResult> Put(int id , OrderDTO orderDTO)
+        public async Task<IActionResult> Put(int id, OrderDTO orderDTO)
         {
+            _logger.LogInformation("\n =============================");
+            _logger.LogInformation($"\n == Update order by id /UpdateOrder/{id} == \n");
+            _logger.LogInformation(" ============================= \n");
 
             var entityOrder = _mapper.Map<OrderModel>(orderDTO);
             var result = await _serviceOrder.UpdateOrder(id, entityOrder);
@@ -124,12 +145,16 @@ namespace OrderWebAPI.Controllers
         /// </summary>
         /// <param name="id">The unique identifier of the order to delete.</param>
         /// <returns>An IActionResult containing the deleted order and a confirmation message if the deletion is successful.</returns>
-        
+
         [Authorize]
         [HttpDelete("DeleteOrder/{id}")]
-        public async Task<IActionResult> DeleteOrder(int id) 
+        public async Task<IActionResult> DeleteOrder(int id)
         {
-            var order = await _serviceOrder.DeleteOrder(id);  
+            _logger.LogInformation("\n =============================");
+            _logger.LogInformation($"\n == Delete order by id /DeleteOrder/{id} == \n");
+            _logger.LogInformation(" ============================= \n");
+
+            var order = await _serviceOrder.DeleteOrder(id);
             return Ok(new { order, message = $"D[{id}] successfully deleted ..." });
         }
 
