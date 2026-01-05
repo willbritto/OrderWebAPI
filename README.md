@@ -52,7 +52,7 @@ controle de categorias e geração de PDF.
 3. Inicie o projeto
 4. Acesse o Swagger em `/swagger`
 5. Realizar cadastro /api/auth/register
-6. Efetuar o login  /api/auth/login, gerando token para autorização de manipulação do endpoints.
+6. Efetuar o login  /api/auth/login, gerará o token para autorização de manipulação do endpoints.
  
 
 
