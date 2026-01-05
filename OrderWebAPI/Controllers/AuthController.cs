@@ -37,17 +37,12 @@ public class AuthController : ControllerBase
         _logger = logger;
     }
 
-    [EnableRateLimiting("fixedRL")]
     /// <summary>
     /// Registers a new user account with the specified registration details.
     /// </summary>
-    /// <remarks>If a user with the specified username already exists, the method returns a bad request
-    /// response. The specified role is created if it does not already exist, and the user is assigned to that role if
-    /// provided.</remarks>
-    /// <param name="registerDTO">An object containing the user's registration information, including username, email, password, and role. Cannot
-    /// be null.</param>
-    /// <returns>An <see cref="IActionResult"/> indicating the result of the registration operation. Returns a success response
-    /// if the user is registered successfully; otherwise, returns an error response with details.</returns>
+    /// <param name="registerDTO"></param>
+    /// <returns></returns>
+    [EnableRateLimiting("fixedRL")]    
     [HttpPost("Register")]
     public async Task<IActionResult> Register(RegisterDTO registerDTO)
     {
@@ -81,18 +76,15 @@ public class AuthController : ControllerBase
 
     }
 
-    [EnableCors]
-    [EnableRateLimiting("fixedRL")]
     /// <summary>
     /// Authenticates a user with the provided credentials and issues a new access token and refresh token upon successful
     /// login.
     /// </summary>
-    /// <remarks>The returned access token includes the user's roles and claims. The refresh token is stored with the
-    /// user and can be used to obtain new access tokens after expiration. The method does not expose detailed error
-    /// information for failed logins to avoid leaking sensitive data.</remarks>
-    /// <param name="loginDTO">An object containing the user's login credentials. Must include a valid username and password.</param>
-    /// <returns>An HTTP 200 response containing the access token, refresh token, and token expiration time if authentication is
-    /// successful; otherwise, an HTTP 401 response indicating invalid credentials or user not found.</returns>
+    /// <param name="loginDTO"></param>
+    /// <returns></returns>
+
+    [EnableCors]
+    [EnableRateLimiting("fixedRL")]    
     [HttpPost("Login")]
     public async Task<IActionResult> Login(LoginDTO loginDTO)
     {

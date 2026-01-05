@@ -44,7 +44,7 @@ namespace OrderWebAPI.Controllers
         public async Task<IActionResult> PrinterOrder(int id)
         {
             _logger.LogInformation("\n =============================");
-            _logger.LogInformation($"\n == Printer order ID /PrinterOrder/{id} == \n");
+            _logger.LogInformation($" == Printer order ID /PrinterOrder/{id} == ");
             _logger.LogInformation(" ============================= \n");
 
             var order = await _serviceOrder.GetOrderById(id);
@@ -66,7 +66,7 @@ namespace OrderWebAPI.Controllers
         public async Task<IActionResult> GetOrderAll()
         {
             _logger.LogInformation("\n =============================");
-            _logger.LogInformation("\n == Filter all orders /GetAllOrders == \n");
+            _logger.LogInformation(" == Filter all orders /GetAllOrders == ");
             _logger.LogInformation(" ============================= \n");
 
             return Ok(await _serviceOrder.GetAllOrder());
@@ -84,7 +84,7 @@ namespace OrderWebAPI.Controllers
         public async Task<IActionResult> GetOrderById(int id)
         {
             _logger.LogInformation("\n =============================");
-            _logger.LogInformation($"\n == Filter order by ID only /GetOrderById/{id} == \n");
+            _logger.LogInformation($" == Filter order by ID only /GetOrderById/{id} == ");
             _logger.LogInformation(" ============================= \n");
 
             var order = await _serviceOrder.GetOrderById(id);
@@ -105,7 +105,7 @@ namespace OrderWebAPI.Controllers
         public async Task<IActionResult> CreateOrder(OrderDTO orderDTO)
         {
             _logger.LogInformation("\n =============================");
-            _logger.LogInformation("\n == Create new order /CreateOrder == \n");
+            _logger.LogInformation(" == Create new order /CreateOrder == ");
             _logger.LogInformation(" ============================= \n");
 
             var entityOrder = _mapper.Map<OrderModel>(orderDTO);
@@ -131,7 +131,7 @@ namespace OrderWebAPI.Controllers
         public async Task<IActionResult> Put(int id, OrderDTO orderDTO)
         {
             _logger.LogInformation("\n =============================");
-            _logger.LogInformation($"\n == Update order by id /UpdateOrder/{id} == \n");
+            _logger.LogInformation($" == Update order by id /UpdateOrder/{id} == ");
             _logger.LogInformation(" ============================= \n");
 
             var entityOrder = _mapper.Map<OrderModel>(orderDTO);
@@ -151,7 +151,7 @@ namespace OrderWebAPI.Controllers
         public async Task<IActionResult> DeleteOrder(int id)
         {
             _logger.LogInformation("\n =============================");
-            _logger.LogInformation($"\n == Delete order by id /DeleteOrder/{id} == \n");
+            _logger.LogInformation($" == Delete order by id /DeleteOrder/{id} == ");
             _logger.LogInformation(" ============================= \n");
 
             var order = await _serviceOrder.DeleteOrder(id);

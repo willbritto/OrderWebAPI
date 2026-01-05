@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using OrderWebAPI.DTOs.EntitieDTOs;
 using OrderWebAPI.Models;
 using OrderWebAPI.Services;
+using OrderWebAPI.Services.Response;
 
 namespace OrderWebAPI.Controllers
 {
@@ -34,14 +35,24 @@ namespace OrderWebAPI.Controllers
         /// </summary>
         /// <returns>Return all list category </returns>
 
-        [HttpGet("GetAllCategorys")]
+        [HttpGet("GetAllCategories")]
         public async Task<IActionResult> GetCategoryAll()
         {
             _logger.LogInformation("\n =============================");
-            _logger.LogInformation("\n == Filter all category /GetAllCategorys == \n");
+            _logger.LogInformation(" == Filter all category /GetAllCategories == ");
             _logger.LogInformation(" ============================= \n");
 
-            return Ok(await _categoryService.GetCategoryAsyncAll());
+            try
+            {
+                return Ok(await _categoryService.GetCategoryAsyncAll());
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ResponseAPI<string>.Fail(ex.Message));
+
+            }
+            
 
         }
         /// <summary>
@@ -56,11 +67,19 @@ namespace OrderWebAPI.Controllers
         public async Task<IActionResult> GetCategoryById(int id)
         {
             _logger.LogInformation("\n =============================");
-            _logger.LogInformation($"\n == Filter category by ID only /GetCategoryById/{id} == \n");
+            _logger.LogInformation($"== Filter category by ID only /GetCategoryById/{id} == ");
             _logger.LogInformation(" ============================= \n");
 
-            var category = await _categoryService.GetCategoryById(id);
-            return Ok(category);
+            try
+            {
+                var category = await _categoryService.GetCategoryById(id);
+                return Ok(category);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ResponseAPI<string>.Fail(ex.Message));
+            }
+            
         }
         /// <summary>
         /// Creates a new category using the specified category model.
@@ -74,12 +93,22 @@ namespace OrderWebAPI.Controllers
         public async Task<IActionResult> CreateCategory(CategoryDTO categoryDTO)
         {
             _logger.LogInformation("\n =============================");
-            _logger.LogInformation("\n == Create new cateogry /CreateCategory == \n");
+            _logger.LogInformation(" == Create new cateogry /CreateCategory == ");
             _logger.LogInformation(" ============================= \n");
 
-            var categoryEntity = _mapper.Map<CategoryModel>(categoryDTO);
-            var result = await _categoryService.CreateCategory(categoryEntity);
-            return Ok(new { Data = result, Status = "Success", Message = "Category created successfully" });
+            try
+            {
+                var categoryEntity = _mapper.Map<CategoryModel>(categoryDTO);
+                var result = await _categoryService.CreateCategory(categoryEntity);
+                return Ok(new { Data = result, Status = "Success", Message = "Category created successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ResponseAPI<string>.Fail(ex.Message));
+                throw;
+            }
+
+
         }
         /// <summary>
         /// Deletes the category with the specified identifier.
@@ -93,12 +122,19 @@ namespace OrderWebAPI.Controllers
         public async Task<IActionResult> DeleteCategory(int id)
         {
             _logger.LogInformation("\n =============================");
-            _logger.LogInformation($"\n == Delete category by ID /DeleteCategory/{id} == \n");
+            _logger.LogInformation($" == Delete category by ID /DeleteCategory/{id} == ");
             _logger.LogInformation(" ============================= \n");
 
-            var category = await _categoryService.DeleteCategory(id);
-
-            return Ok(new { category, message = $"D[{id}] successfully deleted .." });
+            try
+            {
+                var category = await _categoryService.DeleteCategory(id);
+                return Ok(category);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ResponseAPI<string>.Fail(ex.Message));
+            }
+            
 
         }
 

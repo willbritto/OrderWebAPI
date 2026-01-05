@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OrderWebAPI.Data;
 using OrderWebAPI.DTOs.Mappings;
+using OrderWebAPI.Execptions;
 using OrderWebAPI.Models;
 using OrderWebAPI.Services;
 using OrderWebAPI.Services.Logs;
@@ -80,7 +81,6 @@ builder.Services.AddTransient<ICategoryService, CategoryService>();
 //AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingsProfile));
 
-
 //SeriLog
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -94,13 +94,6 @@ var file = File.CreateText("Deb_Diagnostic.txt");
 Serilog.Debugging.SelfLog.Enable(TextWriter.Synchronized(file));
 
 builder.Host.UseSerilog();
-
-//Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
-//Log.Information("An, there you are");
-//Log.Logger = new LoggerConfiguration().CreateLogger();
-//Log.Information("No one listens to me");
-
-//Log.CloseAndFlush();
 
 //Connection SQLServer
 var connectionStringSQL = builder.Configuration.GetConnectionString("DefaultConnectionDB");
@@ -172,6 +165,8 @@ app.MapControllers().RequireRateLimiting("fixedRL");
 
 app.UseHttpsRedirection();
 
+//MiddleException
+app.UseMiddleware<ExceptionMiddleware>();
 
 
 app.UseCors(); //CORS
