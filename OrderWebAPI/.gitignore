@@ -1,0 +1,25 @@
+# Build outputs
+bin/
+obj/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+
+# Logs
+logs/
+*.log
+*.txt
+
+# Ignore sensitive config files
+appsettings.Development.json
+appsettings.Local.json
+appsettings.Production.json
+
+# Environment and secrets
+.env
+secrets.json
+
+# Test results
+TestResults/
