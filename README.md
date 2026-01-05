@@ -43,7 +43,7 @@ controle de categorias e geração de PDF.
 * /Category/GetAllCategorys - Filtra todas as categorias.
 * /Category/GetCategoryById/{id} - Retorna categoria com o ID especifico.
 * /Category/CreateCategory - Cria novas categorias.
-* /Category/DeleteCateogry/{id} - Apaga categoria com ID especifico.
+* /Category/DeleteCategory/{id} - Apaga categoria com ID especifico.
 
 
 ## Como Executar
