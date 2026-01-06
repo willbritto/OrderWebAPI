@@ -1,4 +1,5 @@
-﻿using OrderWebAPI.Models;
+﻿using OrderWebAPI.DTOs.EntitieDTOs;
+using OrderWebAPI.Models;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Pdf;
 
@@ -6,7 +7,7 @@ namespace OrderWebAPI.Services
 {
     public class PrintService : IPrintService
     {
-        public byte[] GenerateOrderPdf(OrderModel orderModel)
+        public byte[] GenerateOrderPdf(OrderDTO orderDTO)
         {
             using var ms = new MemoryStream();
             var document = new PdfDocument();

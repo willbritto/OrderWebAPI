@@ -74,7 +74,7 @@ public class OrderService : IOrderService
     {
         var order = await _repo.DeleteAsync(id);
         if (order == null)
-            throw new ArgumentException($"Order [{id}] not found");
+            throw new ArgumentNullException($"Order [{id}] not found");
         var deleteId = _mapper.Map<OrderDTO>(order);
         return deleteId;
     }

@@ -103,7 +103,7 @@ namespace OrderWebAPI.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ResponseAPI<string>.Fail(ex.Message));
-                throw;
+                
             }
 
 
