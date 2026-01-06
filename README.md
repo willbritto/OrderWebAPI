@@ -32,7 +32,7 @@ API REST em .NET 8 para gerenciamento de ordens de serviço, com autenticação 
 - `POST /Orders` – Cria nova ordem
 - `PUT /Orders/{id}` – Atualiza ordem existente
 - `DELETE /Orders/{id}` – Remove ordem
-- `GET /Orders/PrinterOrder/{id}` – Gera PDF da ordem
+- `GET /Orders/Printer/{id}` – Gera PDF da ordem
 
 ### Category
 - `GET /Categorys` – Lista todas as categorias
