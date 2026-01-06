@@ -27,18 +27,18 @@ API REST em .NET 8 para gerenciamento de ordens de serviço, com autenticação 
 - `POST /Auth/Login` – Login e geração de token JWT
 
 ### Order
-- `GET /Order/GetAllOrders` – Lista todas as ordens
-- `GET /Order/GetOrderById/{id}` – Busca ordem por ID
-- `POST /Order/CreateOrder` – Cria nova ordem
-- `PUT /Order/UpdateOrder/{id}` – Atualiza ordem existente
-- `DELETE /Order/DeleteOrder/{id}` – Remove ordem
-- `GET /Order/PrinterOrder/{id}` – Gera PDF da ordem
+- `GET /Orders` – Lista todas as ordens
+- `GET /Orders/{id}` – Busca ordem por ID
+- `POST /Orders` – Cria nova ordem
+- `PUT /Orders/{id}` – Atualiza ordem existente
+- `DELETE /Orders/{id}` – Remove ordem
+- `GET /Orders/PrinterOrder/{id}` – Gera PDF da ordem
 
 ### Category
-- `GET /Category/GetAllCategories` – Lista todas as categorias
-- `GET /Category/GetCategoryById/{id}` – Busca categoria por ID
-- `POST /Category/CreateCategory` – Cria nova categoria
-- `DELETE /Category/DeleteCategory/{id}` – Remove categoria
+- `GET /Categorys` – Lista todas as categorias
+- `GET /Categorys/{id}` – Busca categoria por ID
+- `POST /Categorys` – Cria nova categoria
+- `DELETE /Categorys/{id}` – Remove categoria
 
 ## ▶️ Como executar
 1. Configure o arquivo `appsettings.Development.json`
