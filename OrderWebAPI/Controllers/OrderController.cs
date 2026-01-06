@@ -19,16 +19,15 @@ namespace OrderWebAPI.Controllers
     {
 
         private readonly IOrderService _serviceOrder;
-        private readonly IPrintService _printService;
-        private readonly IMapper _mapper;
+        private readonly IPrintService _printService;     
         private readonly ILogger<OrderController> _logger;
 
-        public OrderController(IOrderService orderService, IPrintService printService, IMapper mapper, ILogger<OrderController> logger)
+        public OrderController(IOrderService orderService, IPrintService printService,  ILogger<OrderController> logger)
         {
 
             _serviceOrder = orderService;
             _printService = printService;
-            _mapper = mapper;
+           
             _logger = logger;
         }
 
@@ -47,9 +46,7 @@ namespace OrderWebAPI.Controllers
             _logger.LogInformation($" == Printer order ID /PrinterOrder/{id} == ");
             _logger.LogInformation(" ============================= \n");
 
-            var order = await _serviceOrder.GetOrderById(id);
-            if (order == null)
-                return NotFound($"It was not possible to print the order because the ID [{id}] does not exist or is not registered in the database.");
+            var order = await _serviceOrder.GetById(id);          
 
             var pdfBytes = _printService.GenerateOrderPdf(order);
             return File(pdfBytes, "application/pdf", $"Order_{id}.pdf");
@@ -69,7 +66,7 @@ namespace OrderWebAPI.Controllers
             _logger.LogInformation(" == Filter all orders /GetAllOrders == ");
             _logger.LogInformation(" ============================= \n");
 
-            return Ok(await _serviceOrder.GetAllOrder());
+            return Ok(await _serviceOrder.GetAllAsync());
         }
 
         /// <summary>
@@ -87,7 +84,7 @@ namespace OrderWebAPI.Controllers
             _logger.LogInformation($" == Filter order by ID only /GetOrderById/{id} == ");
             _logger.LogInformation(" ============================= \n");
 
-            var order = await _serviceOrder.GetOrderById(id);
+            var order = await _serviceOrder.GetById(id);
             return Ok(order);
         }
 
@@ -108,10 +105,9 @@ namespace OrderWebAPI.Controllers
             _logger.LogInformation(" == Create new order /CreateOrder == ");
             _logger.LogInformation(" ============================= \n");
 
-            var entityOrder = _mapper.Map<OrderModel>(orderDTO);
-            var result = await _serviceOrder.CreateOrder(entityOrder);
-
-            return Ok(new { Data = result, Status = "Success", Message = "Order created successfully" });
+            
+            var result =  await _serviceOrder.CreateAsync(orderDTO);
+            return Ok(result);
 
         }
 
@@ -134,9 +130,9 @@ namespace OrderWebAPI.Controllers
             _logger.LogInformation($" == Update order by id /UpdateOrder/{id} == ");
             _logger.LogInformation(" ============================= \n");
 
-            var entityOrder = _mapper.Map<OrderModel>(orderDTO);
-            var result = await _serviceOrder.UpdateOrder(id, entityOrder);
-            return Ok(new { Data = result, Status = "Success", Message = "Order updated successfully" });
+            
+            var result = await _serviceOrder.UpdateAsync(id, orderDTO);
+            return Ok(result);
 
         }
 
@@ -154,8 +150,8 @@ namespace OrderWebAPI.Controllers
             _logger.LogInformation($" == Delete order by id /DeleteOrder/{id} == ");
             _logger.LogInformation(" ============================= \n");
 
-            var order = await _serviceOrder.DeleteOrder(id);
-            return Ok(new { order, message = $"D[{id}] successfully deleted ..." });
+            var order = await _serviceOrder.DeleteAsync(id);
+            return Ok(order);
         }
 
 
