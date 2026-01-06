@@ -47,7 +47,7 @@ namespace OrderWebAPI.Execptions
             };
 
             var json = JsonSerializer.Serialize(errorResponse);
-            return response.WriteAsync(json);
+            await response.WriteAsync(json);
 
         }
     }

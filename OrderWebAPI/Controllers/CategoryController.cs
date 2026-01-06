@@ -19,14 +19,12 @@ namespace OrderWebAPI.Controllers
     public class CategoryController : ControllerBase
     {
 
-        private readonly ICategoryService _categoryService;
-        private readonly IMapper _mapper;
+        private readonly ICategoryService _categoryService;        
         private readonly ILogger<CategoryController> _logger;
 
-        public CategoryController(ICategoryService categoryService, IMapper mapper, ILogger<CategoryController> logger)
+        public CategoryController(ICategoryService categoryService, ILogger<CategoryController> logger)
         {
-            _categoryService = categoryService;
-            _mapper = mapper;
+            _categoryService = categoryService;           
             _logger = logger;
         }
 
@@ -44,7 +42,7 @@ namespace OrderWebAPI.Controllers
 
             try
             {
-                return Ok(await _categoryService.GetCategoryAsyncAll());
+                return Ok(await _categoryService.GetAllAsync());
             }
             catch (Exception ex)
             {
@@ -72,7 +70,7 @@ namespace OrderWebAPI.Controllers
 
             try
             {
-                var category = await _categoryService.GetCategoryById(id);
+                var category = await _categoryService.GetById(id);
                 return Ok(category);
             }
             catch (Exception ex)
@@ -98,9 +96,9 @@ namespace OrderWebAPI.Controllers
 
             try
             {
-                var categoryEntity = _mapper.Map<CategoryModel>(categoryDTO);
-                var result = await _categoryService.CreateCategory(categoryEntity);
-                return Ok(new { Data = result, Status = "Success", Message = "Category created successfully" });
+                
+                await _categoryService.CreateAsync(categoryDTO);
+                return Ok(categoryDTO);
             }
             catch (Exception ex)
             {
@@ -127,7 +125,7 @@ namespace OrderWebAPI.Controllers
 
             try
             {
-                var category = await _categoryService.DeleteCategory(id);
+                var category = await _categoryService.DeleteAsync(id);
                 return Ok(category);
             }
             catch (Exception ex)

@@ -21,7 +21,7 @@ namespace OrderWebAPI.Tests.CategoryUnitTests
             var category = new CategoryModel { CategoryId = 2, Service_Type = "Upgrade" };
 
             //Act
-            var result = await service.CreateCategory(category);
+            var result = await service.CreateAsync(category);
             //Assert
             Assert.NotNull(result);
             Assert.Equal("Upgrade", result.Service_Type);

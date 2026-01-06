@@ -1,153 +1,70 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Any;
 using OrderWebAPI.Data;
 using OrderWebAPI.DTOs.EntitieDTOs;
 using OrderWebAPI.Models;
+using OrderWebAPI.Repositories.Interfaces;
 using OrderWebAPI.Services.Response;
 
 namespace OrderWebAPI.Services;
 
 public class CategoryService : ICategoryService
 {
+    private readonly ICategoryRepository _repo;
+    private readonly IMapper _mapper;
 
-    private readonly ApplicationDbContext _context;
-
-    public CategoryService(ApplicationDbContext dbContext)
+    public CategoryService(ICategoryRepository category, IMapper mapper)
     {
-        _context = dbContext;
+        _repo = category;
+        _mapper = mapper;
     }
 
-    public async Task<ResponseAPI<IEnumerable<CategoryModel>>> GetCategoryAsyncAll()
+    public async Task<IEnumerable<CategoryDTO>> GetAllAsync()
     {
-        var response = new ResponseAPI<IEnumerable<CategoryModel>>();
-        try
-        {
-            var categories = await _context.categoryModels.AsNoTracking().ToListAsync();
-            response.Data = categories;
-
-            if (response.Data?.Count() == 0)
-            {
-                response.Message = "No data found";
-            }
-            else
-            {
-                response.Message = "Categories successfully listed";
-            }
-        }
-        catch (Exception ex)
-        {
-
-            response.Message = ex.Message;
-            response.Success = false;
-            return response;
-
-        }
-        return response;
-    }
-
-    public async Task<ResponseAPI<CategoryModel>> GetCategoryById(int id)
-    {
-        var response = new ResponseAPI<CategoryModel>();
-        try
-        {
-            CategoryModel category = await _context.categoryModels.FirstOrDefaultAsync(c => c.CategoryId == id);
-
-            if (category == null)
-            {
-                response.Data = null;
-                response.Message = "No category matching ID was found.";
-                response.Success = false;
-
-            }
-            response.Data = category;
-        }
-        catch (Exception ex)
-        {
-
-            response.Message = ex.Message;
-            response.Success = false;
-        }
-        return response;
-    }
-
-    public async Task<ResponseAPI<CategoryModel>> CreateCategory(CategoryModel model)
-    {
-        var response = new ResponseAPI<CategoryModel>();
-        try
-        {
-            if (model == null)
-            {
-                response.Data = null;
-                response.Message = "No data reported";
-                response.Success = false;
-
-                return response;
-
-            }
-            else
-            {
-                response.Message = "Category created successfully.";
-            }
-
-                _context.Add(model);
-            await _context.SaveChangesAsync();
-
-            response.Data = model;
-
-        }
-        catch (Exception ex)
-        {
-            response.Message = ex.Message;
-            response.Success = false;
-            return response;
-
-
-        }
-        return response;
-
+        var categories = await _repo.GetAllAsync();
+        if (categories == null || !categories.Any())
+            throw new KeyNotFoundException("No categories found.");
+        var dtoList = _mapper.Map<IEnumerable<CategoryDTO>>(categories);
+        return dtoList;
 
     }
 
-    public async Task<ResponseAPI<CategoryModel>> DeleteCategory(int id)
+    public async Task<CategoryDTO> GetById(int id)
     {
-        var response = new ResponseAPI<CategoryModel>();
+        var category = await _repo.GetById(id);
+        if (category == null)
+            throw new KeyNotFoundException($"ID [{id}] Category not exists");
+        var result = _mapper.Map<CategoryDTO>(category);
+        return result;
+    }
 
-        try
-        {
-            CategoryModel category = await _context.categoryModels.FirstOrDefaultAsync(c => c.CategoryId == id);
+    public async Task<CategoryDTO> CreateAsync(CategoryDTO model)
+    {
 
-            if (category == null)
-            {
-                response.Data = null;
-                response.Message = "No category matching ID was found.";
-                response.Success = false;
+        if (model == null)
+            throw new ArgumentNullException(nameof(model));
 
-                return response;
-            }
-            else
-            {
-                response.Message = "Category deletad successfully.";
-            }
+        if (string.IsNullOrWhiteSpace(model.Service_Type))
+            throw new ArgumentException("Name is required");
+        
 
-            _context.categoryModels.Remove(category);
-            await _context.SaveChangesAsync();
-
-
-            response.Data = category;
-
-        }
-        catch (Exception ex)
-        {
-
-            response.Message = ex.Message;
-            response.Success = false;
-
-
-        }
-        return response;
-
+        var entity = _mapper.Map<CategoryModel>(model);
+        var category = await _repo.CreateAsync(entity);
+        var dto = _mapper.Map<CategoryDTO>(category);
+        return dto;
 
     }
+
+    public async Task<CategoryDTO> DeleteAsync(int id)
+    {
+        var category = await _repo.DeleteAsync(id);
+        if (category == null)
+            throw new KeyNotFoundException($"ID [{id}] Category not exists");
+        var resultDelete = _mapper.Map<CategoryDTO>(category);
+        return resultDelete;
+    }
+
 
 }

@@ -21,7 +21,7 @@ namespace OrderWebAPI.Tests.CategoryUnitTests
             var service = new CategoryService(context);
 
             //Act
-            var result = await service.GetCategoryById(1);
+            var result = await service.GetById(1);
 
             //Assert
             Assert.NotNull(result);

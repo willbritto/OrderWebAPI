@@ -8,9 +8,12 @@ using OrderWebAPI.Data;
 using OrderWebAPI.DTOs.Mappings;
 using OrderWebAPI.Execptions;
 using OrderWebAPI.Models;
+using OrderWebAPI.Repositories;
+using OrderWebAPI.Repositories.Interfaces;
 using OrderWebAPI.Services;
 using OrderWebAPI.Services.Logs;
 using Serilog;
+using System.Data.Common;
 using System.Reflection;
 using System.Text;
 using System.Threading.RateLimiting;
@@ -75,8 +78,9 @@ builder.Services.AddSwaggerGen(c =>
 //Entities e Services
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPrintService, PrintService>();
-builder.Services.AddTransient<IOrderService, OrderService>();
-builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICategoryRepository , CategoryRepository>();
 
 //AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingsProfile));

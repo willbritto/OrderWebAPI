@@ -6,11 +6,9 @@ namespace OrderWebAPI.Services;
 
 public interface ICategoryService
 {
-    Task<ResponseAPI<IEnumerable<CategoryModel>>> GetCategoryAsyncAll();
-    Task<ResponseAPI<CategoryModel>> GetCategoryById(int id);
-
-    Task<ResponseAPI<CategoryModel>> CreateCategory(CategoryModel model);
-    //Task<CategoryModel> UpdateCategory(int id, CategoryModel model);
-    Task<ResponseAPI<CategoryModel>> DeleteCategory(int id);
+    Task<IEnumerable<CategoryDTO>> GetAllAsync();
+    Task<CategoryDTO> GetById(int id);
+    Task<CategoryDTO> CreateAsync(CategoryDTO model);
+    Task<CategoryDTO> DeleteAsync(int id);
 
 }
