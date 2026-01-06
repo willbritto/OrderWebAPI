@@ -45,6 +45,6 @@ API REST em .NET 8 para gerenciamento de ordens de serviço, com autenticação 
 2. Execute as migrations: `dotnet ef database update`
 3. Inicie o projeto: `dotnet run`
 4. Acesse o Swagger em `/swagger`
-5. Cadastre um usuário em `/api/auth/register`
-6. Faça login em `/api/auth/login` para obter o token JWT
+5. Cadastre um usuário em `/api/Auth/Register`
+6. Faça login em `/api/Auth/Login` para obter o token JWT
 
