@@ -1,124 +1,91 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
-using OrderWebAPI.Data;
+﻿using AutoMapper;
 using OrderWebAPI.DTOs.EntitieDTOs;
 using OrderWebAPI.Models;
-using Serilog;
+using OrderWebAPI.Repositories.Interfaces;
 
 namespace OrderWebAPI.Services;
 
 public class OrderService : IOrderService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IOrderRepository _repo;
+    private readonly IMapper _mapper;
 
-    public OrderService(ApplicationDbContext dbContext)
+    public OrderService(IOrderRepository repo, IMapper mapper)
     {
-        _context = dbContext;
+        _repo = repo;
+        _mapper = mapper;
     }
 
-    public async Task<IEnumerable<OrderModel>> GetAllOrder()
+
+    public async Task<IEnumerable<OrderDTO>> GetAllAsync()
     {
-        try
-        {
-            var orders = await _context.orderModels.ToListAsync();
-            return orders;
-        }
-        catch (Exception ex)
-        {
-            throw new ArgumentException ($"Error while trying to retrieve orders: {ex.Message}");
-        }
+        var orders = await _repo.GetAllAsync();
+        if (orders == null || !orders.Any())
+            throw new KeyNotFoundException("Invalid order data");
+        var orderList = _mapper.Map<IEnumerable<OrderDTO>>(orders);
+        return orderList;
     }
 
-    public async Task<OrderModel> GetOrderById(int id)
+    public async Task<OrderDTO> GetById(int id)
     {
-        try
-        {
-            var order = await _context.orderModels.FirstOrDefaultAsync(o => o.OrderId == id);
-            return order;
-        }
-        catch (Exception ex)
-        {
-            throw new ArgumentException($"Error while trying to retrieve order of [{id}]: {ex.Message}");
-        }
+        var order = await _repo.GetById(id);
+        if (order == null)
+            throw new KeyNotFoundException($"Order [{id}] not found");
+        var orderId = _mapper.Map<OrderDTO>(order);
+        return orderId;
     }
 
-    public async Task<OrderModel> CreateOrder(OrderModel model)
+
+
+    public async Task<OrderDTO> CreateAsync(OrderDTO orderDTO)
     {
-        try
-        {
-            
-            if (model == null)
-                return null;
+        if (orderDTO == null)
+            throw new ArgumentNullException(nameof(orderDTO));
 
-            _context.Add(model);
-            await _context.SaveChangesAsync();
+        ValidationStrings(orderDTO);
 
-            return model;
-        }
-        catch (Exception ex)
-        {
-
-            Log.Error(ex, "Error save entity");
-            throw;
-            
-        }
+        var entity = _mapper.Map<OrderModel>(orderDTO);
+        var order = await _repo.CreateAsync(entity);
+        var result = _mapper.Map<OrderDTO>(order);
+        return result;
 
 
     }
 
-    public async Task<OrderModel> UpdateOrder(int id, OrderModel orderModel)
+
+    public async Task<OrderDTO> UpdateAsync(int id, OrderDTO orderDTO)
     {
+        if (orderDTO == null)
+            throw new ArgumentNullException(nameof(orderDTO));
 
-        try
-        {
-            var order = await _context.orderModels.FirstOrDefaultAsync(o => o.OrderId == orderModel.OrderId);
+        ValidationStrings(orderDTO);
 
-            if (order == null)
-                return null;
+        var entity = await _repo.GetById(id);
+        if (entity == null)
+            throw new KeyNotFoundException($"Order [{id}] not found");
 
-            order.Description = order.Description;
-            order.Price = order.Price;
-            order.Status = order.Status;
-            order.CategoryId = order.CategoryId;
+        _mapper.Map(orderDTO, entity);
 
-            await _context.SaveChangesAsync();
-
-            return orderModel;
-        }
-        catch (Exception ex)
-        {
-
-            throw new ArgumentException($"Error while trying to update order: {ex.Message}");
-        }
-
-        
-
+        var updated = await _repo.UpdateAsync(entity);
+        return _mapper.Map<OrderDTO>(updated);
     }
 
-    public async Task<OrderModel> DeleteOrder(int id)
+    public async Task<OrderDTO> DeleteAsync(int id)
     {
-
-        try
-        {
-            var order = await _context.orderModels.FirstOrDefaultAsync(o => o.OrderId == id);
-
-            if (order == null)
-                return null;
-
-            _context.Remove(order);
-            await _context.SaveChangesAsync();
-
-            return order;
-
-        }
-        catch (Exception ex)
-        {
-
-            throw new ArgumentException($"Error while trying to delete order: {ex.Message}");
-        }
-
-        
-        
+        var order = await _repo.DeleteAsync(id);
+        if (order == null)
+            throw new ArgumentException($"Order [{id}] not found");
+        var deleteId = _mapper.Map<OrderDTO>(order);
+        return deleteId;
     }
 
+    private void ValidationStrings(OrderDTO orderDTO)
+    {
+        if (string.IsNullOrEmpty(orderDTO.NameFull)) throw new ArgumentException("Name Full is required");
+        if (string.IsNullOrEmpty(orderDTO.Description)) throw new ArgumentException("Description is required");
+        if (orderDTO.Price <= 0) throw new ArgumentException("Price cannot be 0");
+
+
+    }
 }
+

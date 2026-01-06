@@ -1,12 +1,7 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Any;
-using OrderWebAPI.Data;
 using OrderWebAPI.DTOs.EntitieDTOs;
 using OrderWebAPI.Models;
 using OrderWebAPI.Repositories.Interfaces;
-using OrderWebAPI.Services.Response;
 
 namespace OrderWebAPI.Services;
 
@@ -25,7 +20,7 @@ public class CategoryService : ICategoryService
     {
         var categories = await _repo.GetAllAsync();
         if (categories == null || !categories.Any())
-            throw new KeyNotFoundException("No categories found.");
+            throw new KeyNotFoundException("Invalid category data");
         var dtoList = _mapper.Map<IEnumerable<CategoryDTO>>(categories);
         return dtoList;
 
@@ -35,7 +30,7 @@ public class CategoryService : ICategoryService
     {
         var category = await _repo.GetById(id);
         if (category == null)
-            throw new KeyNotFoundException($"ID [{id}] Category not exists");
+            throw new KeyNotFoundException($"ID [{id}] Category not found");
         var result = _mapper.Map<CategoryDTO>(category);
         return result;
     }
@@ -46,8 +41,7 @@ public class CategoryService : ICategoryService
         if (model == null)
             throw new ArgumentNullException(nameof(model));
 
-        if (string.IsNullOrWhiteSpace(model.Service_Type))
-            throw new ArgumentException("Name is required");
+        ValidateString(model);
         
 
         var entity = _mapper.Map<CategoryModel>(model);
@@ -61,10 +55,16 @@ public class CategoryService : ICategoryService
     {
         var category = await _repo.DeleteAsync(id);
         if (category == null)
-            throw new KeyNotFoundException($"ID [{id}] Category not exists");
+            throw new KeyNotFoundException($"ID [{id}] Category not found");
         var resultDelete = _mapper.Map<CategoryDTO>(category);
         return resultDelete;
     }
 
+
+    private void ValidateString (CategoryDTO model) 
+    {
+        if (string.IsNullOrWhiteSpace(model.Service_Type)) throw new ArgumentException("Service type is required");
+        
+    }
 
 }

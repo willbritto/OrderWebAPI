@@ -1,19 +1,17 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OrderWebAPI.Data;
 using OrderWebAPI.DTOs.Mappings;
-using OrderWebAPI.Execptions;
+using OrderWebAPI.Exceptions;
 using OrderWebAPI.Models;
 using OrderWebAPI.Repositories;
 using OrderWebAPI.Repositories.Interfaces;
 using OrderWebAPI.Services;
 using OrderWebAPI.Services.Logs;
 using Serilog;
-using System.Data.Common;
 using System.Reflection;
 using System.Text;
 using System.Threading.RateLimiting;
@@ -170,7 +168,7 @@ app.MapControllers().RequireRateLimiting("fixedRL");
 app.UseHttpsRedirection();
 
 //MiddleException
-app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 
 app.UseCors(); //CORS
