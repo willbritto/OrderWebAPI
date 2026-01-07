@@ -1,42 +1,60 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace OrderWebAPI.Exceptions
+namespace OrderWebAPI.Exceptions;
+
+public class ExceptionHandlingMiddleware
 {
-    public class ExceptionHandlingMiddleware
+    private readonly RequestDelegate _next;
+    private readonly ILogger<ExceptionHandlingMiddleware> _logger;
+
+    public ExceptionHandlingMiddleware( RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<ExceptionHandlingMiddleware> _logger;
+        _next = next;
+        _logger = logger;
+    }
 
-        public ExceptionHandlingMiddleware(
-            RequestDelegate next,
-            ILogger<ExceptionHandlingMiddleware> logger)
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
         {
-            _next = next;
-            _logger = logger;
+            await _next(context);
         }
-
-        public async Task InvokeAsync(HttpContext context)
+        catch (Exception exception)
         {
-            try
+            _logger.LogError(exception, "Unhandled exception");
+
+            var problemDetails = new ProblemDetails
             {
-                await _next(context);
-            }
-            catch (Exception exception)
+                Title = "An error occurred"
+            };
+
+            switch (exception)
             {
-                _logger.LogError(
-                    exception, "Exception occurred: {Message}", exception.Message);
+                case ArgumentNullException:
+                case ArgumentException:
+                    problemDetails.Status = StatusCodes.Status400BadRequest;
+                    problemDetails.Title = "Bad Request";
+                    problemDetails.Detail = exception.Message;
+                    break;
 
-                var problemDetails = new ProblemDetails
-                {
-                    Status = StatusCodes.Status500InternalServerError,
-                    Title = "Server Error"
-                };
+                case KeyNotFoundException:
+                    problemDetails.Status = StatusCodes.Status404NotFound;
+                    problemDetails.Title = "Not Found";
+                    problemDetails.Detail = exception.Message;
+                    break;
 
-                context.Response.StatusCode =
-                    StatusCodes.Status500InternalServerError;
-
-                await context.Response.WriteAsJsonAsync(problemDetails);
+                default:
+                    problemDetails.Status = StatusCodes.Status500InternalServerError;
+                    problemDetails.Title = "Internal Server Error";
+                    problemDetails.Detail = "An unexpected error occurred.";
+                    break;
             }
+
+            context.Response.StatusCode = problemDetails.Status.Value;
+            context.Response.ContentType = "application/json";
+
+            await context.Response.WriteAsJsonAsync(problemDetails);
         }
     }
 }
+

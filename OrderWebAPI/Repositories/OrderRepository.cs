@@ -34,9 +34,8 @@ namespace OrderWebAPI.Repositories
 
 
         public async Task<OrderModel> UpdateAsync(OrderModel orderModel)
-        {
-            var order = await _context.orderModels.FirstOrDefaultAsync(o=>o.OrderId == id);
-            _context.Update(order);
+        {           
+            _context.Update(orderModel);
             await _context.SaveChangesAsync();
             return orderModel;
         }

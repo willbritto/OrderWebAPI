@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace OrderWebAPI.Services
+namespace OrderWebAPI.Services.Interfaces
 {
     public interface ITokenService
     {

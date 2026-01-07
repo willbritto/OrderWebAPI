@@ -10,6 +10,7 @@ using OrderWebAPI.Models;
 using OrderWebAPI.Repositories;
 using OrderWebAPI.Repositories.Interfaces;
 using OrderWebAPI.Services;
+using OrderWebAPI.Services.Interfaces;
 using OrderWebAPI.Services.Logs;
 using Serilog;
 using System.Reflection;
@@ -79,6 +80,7 @@ builder.Services.AddScoped<IPrintService, PrintService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository , CategoryRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 //AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingsProfile));

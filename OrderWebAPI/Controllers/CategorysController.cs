@@ -1,12 +1,9 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using OrderWebAPI.DTOs.EntitieDTOs;
-using OrderWebAPI.Models;
-using OrderWebAPI.Services;
+using OrderWebAPI.Services.Interfaces;
 using OrderWebAPI.Services.Response;
 
 namespace OrderWebAPI.Controllers
@@ -16,15 +13,15 @@ namespace OrderWebAPI.Controllers
     [EnableRateLimiting("fixedRL")]
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class CategorysController : ControllerBase
     {
 
-        private readonly ICategoryService _categoryService;        
-        private readonly ILogger<CategoryController> _logger;
+        private readonly ICategoryService _categoryService;
+        private readonly ILogger<CategorysController> _logger;
 
-        public CategoryController(ICategoryService categoryService, ILogger<CategoryController> logger)
+        public CategorysController(ICategoryService categoryService, ILogger<CategorysController> logger)
         {
-            _categoryService = categoryService;           
+            _categoryService = categoryService;
             _logger = logger;
         }
 
@@ -33,7 +30,7 @@ namespace OrderWebAPI.Controllers
         /// </summary>
         /// <returns>Return all list category </returns>
 
-        [HttpGet("GetAllCategories")]
+        [HttpGet]
         public async Task<IActionResult> GetCategoryAll()
         {
             _logger.LogInformation("\n =============================");
@@ -50,7 +47,7 @@ namespace OrderWebAPI.Controllers
                 return BadRequest(ResponseAPI<string>.Fail(ex.Message));
 
             }
-            
+
 
         }
         /// <summary>
@@ -61,7 +58,7 @@ namespace OrderWebAPI.Controllers
         /// the category was not found.</returns>
 
         [Authorize]
-        [HttpGet("GetCategoryById/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryById(int id)
         {
             _logger.LogInformation("\n =============================");
@@ -77,7 +74,7 @@ namespace OrderWebAPI.Controllers
             {
                 return BadRequest(ResponseAPI<string>.Fail(ex.Message));
             }
-            
+
         }
         /// <summary>
         /// Creates a new category using the specified category model.
@@ -87,23 +84,23 @@ namespace OrderWebAPI.Controllers
         /// created category data if successful.</returns>
 
         [Authorize]
-        [HttpPost("CreateCategory")]
+        [HttpPost]
         public async Task<IActionResult> CreateCategory(CategoryDTO categoryDTO)
         {
             _logger.LogInformation("\n =============================");
-            _logger.LogInformation(" == Create new cateogry /CreateCategory == ");
+            _logger.LogInformation(" == Create new category /CreateCategory == ");
             _logger.LogInformation(" ============================= \n");
 
             try
             {
-                
+
                 await _categoryService.CreateAsync(categoryDTO);
                 return Ok(categoryDTO);
             }
             catch (Exception ex)
             {
                 return BadRequest(ResponseAPI<string>.Fail(ex.Message));
-                
+
             }
 
 
@@ -116,7 +113,7 @@ namespace OrderWebAPI.Controllers
         /// successful.</returns>
 
         [Authorize]
-        [HttpDelete("DeleteCategory/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             _logger.LogInformation("\n =============================");
@@ -132,7 +129,7 @@ namespace OrderWebAPI.Controllers
             {
                 return BadRequest(ResponseAPI<string>.Fail(ex.Message));
             }
-            
+
 
         }
 

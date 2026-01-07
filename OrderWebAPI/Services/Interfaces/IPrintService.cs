@@ -1,10 +1,10 @@
 ﻿using OrderWebAPI.DTOs.EntitieDTOs;
 using OrderWebAPI.Models;
 
-namespace OrderWebAPI.Services
+namespace OrderWebAPI.Services.Interfaces
 {
     public interface IPrintService
     {
-        byte[] GenerateOrderPdf(OrderDTO orderDTO);
+        byte[] GenerateOrderPdf(PrintDTO printDTO);
     }
 }

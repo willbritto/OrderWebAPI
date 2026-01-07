@@ -2,6 +2,7 @@
 using OrderWebAPI.DTOs.EntitieDTOs;
 using OrderWebAPI.Models;
 using OrderWebAPI.Repositories.Interfaces;
+using OrderWebAPI.Services.Interfaces;
 
 namespace OrderWebAPI.Services;
 

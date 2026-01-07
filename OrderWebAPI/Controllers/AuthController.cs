@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.RateLimiting;
 using OrderWebAPI.DTOs.Autentications;
 using OrderWebAPI.Models;
-using OrderWebAPI.Services;
+using OrderWebAPI.Services.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 

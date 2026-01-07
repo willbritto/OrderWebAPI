@@ -2,7 +2,7 @@
 using OrderWebAPI.Models;
 using OrderWebAPI.Services.Response;
 
-namespace OrderWebAPI.Services;
+namespace OrderWebAPI.Services.Interfaces;
 
 public interface ICategoryService
 {

@@ -1,6 +1,6 @@
 ﻿using OrderWebAPI.DTOs.EntitieDTOs;
 
-namespace OrderWebAPI.Services;
+namespace OrderWebAPI.Services.Interfaces;
 
 public interface IOrderService
 {

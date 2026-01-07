@@ -1,12 +1,9 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using OrderWebAPI.DTOs.EntitieDTOs;
-using OrderWebAPI.Models;
-using OrderWebAPI.Services;
+using OrderWebAPI.Services.Interfaces;
 
 namespace OrderWebAPI.Controllers
 {
@@ -15,19 +12,19 @@ namespace OrderWebAPI.Controllers
     [EnableRateLimiting("fixedRL")]
     [Route("api/[controller]")]
     [ApiController]
-    public class OrderController : ControllerBase
+    public class OrdersController : ControllerBase
     {
 
         private readonly IOrderService _serviceOrder;
-        private readonly IPrintService _printService;     
-        private readonly ILogger<OrderController> _logger;
+        private readonly IPrintService _printService;
+        private readonly ILogger<OrdersController> _logger;
 
-        public OrderController(IOrderService orderService, IPrintService printService,  ILogger<OrderController> logger)
+        public OrdersController(IOrderService orderService, IPrintService printService, ILogger<OrdersController> logger)
         {
 
             _serviceOrder = orderService;
             _printService = printService;
-           
+
             _logger = logger;
         }
 
@@ -39,14 +36,14 @@ namespace OrderWebAPI.Controllers
         /// cref="NotFoundResult"/> if the order does not exist.</returns>
 
         [Authorize]
-        [HttpGet("PrinterOrder/{id}")]
+        [HttpGet("Printer/{id}")]
         public async Task<IActionResult> PrinterOrder(int id)
         {
             _logger.LogInformation("\n =============================");
             _logger.LogInformation($" == Printer order ID /PrinterOrder/{id} == ");
             _logger.LogInformation(" ============================= \n");
 
-            var order = await _serviceOrder.GetById(id);          
+            var order = await _serviceOrder.GetById(id);
 
             var pdfBytes = _printService.GenerateOrderPdf(order);
             return File(pdfBytes, "application/pdf", $"Order_{id}.pdf");
@@ -59,7 +56,7 @@ namespace OrderWebAPI.Controllers
         /// (OK) with the list of orders in the response body.</returns>
 
 
-        [HttpGet("GetAllOrders")]
+        [HttpGet]
         public async Task<IActionResult> GetOrderAll()
         {
             _logger.LogInformation("\n =============================");
@@ -77,7 +74,7 @@ namespace OrderWebAPI.Controllers
         /// the order was not found.</returns>
 
         [Authorize]
-        [HttpGet("GetOrderById/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderById(int id)
         {
             _logger.LogInformation("\n =============================");
@@ -98,15 +95,15 @@ namespace OrderWebAPI.Controllers
         /// created order details if successful.</returns>
 
         [Authorize]
-        [HttpPost("CreateOrder")]
+        [HttpPost]
         public async Task<IActionResult> CreateOrder(OrderDTO orderDTO)
         {
             _logger.LogInformation("\n =============================");
             _logger.LogInformation(" == Create new order /CreateOrder == ");
             _logger.LogInformation(" ============================= \n");
 
-            
-            var result =  await _serviceOrder.CreateAsync(orderDTO);
+
+            var result = await _serviceOrder.CreateAsync(orderDTO);
             return Ok(result);
 
         }
@@ -123,14 +120,14 @@ namespace OrderWebAPI.Controllers
         /// cref="OkObjectResult"/> with the updated order if successful.</returns>
 
         [Authorize]
-        [HttpPut("UpdateOrder/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, OrderDTO orderDTO)
         {
             _logger.LogInformation("\n =============================");
             _logger.LogInformation($" == Update order by id /UpdateOrder/{id} == ");
             _logger.LogInformation(" ============================= \n");
 
-            
+
             var result = await _serviceOrder.UpdateAsync(id, orderDTO);
             return Ok(result);
 
@@ -143,7 +140,7 @@ namespace OrderWebAPI.Controllers
         /// <returns>An IActionResult containing the deleted order and a confirmation message if the deletion is successful.</returns>
 
         [Authorize]
-        [HttpDelete("DeleteOrder/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
             _logger.LogInformation("\n =============================");
