@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -18,14 +19,16 @@ namespace OrderWebAPI.Controllers
         private readonly IOrderService _serviceOrder;
         private readonly IPrintService _printService;
         private readonly ILogger<OrdersController> _logger;
+        private readonly IMapper _mapper;
 
-        public OrdersController(IOrderService orderService, IPrintService printService, ILogger<OrdersController> logger)
+        public OrdersController(IOrderService orderService, IPrintService printService, ILogger<OrdersController> logger, IMapper mapper)
         {
 
             _serviceOrder = orderService;
             _printService = printService;
 
             _logger = logger;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -44,8 +47,12 @@ namespace OrderWebAPI.Controllers
             _logger.LogInformation(" ============================= \n");
 
             var order = await _serviceOrder.GetById(id);
+            if (order == null)
+                return NotFound($"Order [{id}] not found");
 
-            var pdfBytes = _printService.GenerateOrderPdf(order);
+            var printDto = _mapper.Map<PrintDTO>(order);
+
+            var pdfBytes = _printService.GenerateOrderPdf(printDto);
             return File(pdfBytes, "application/pdf", $"Order_{id}.pdf");
         }
 

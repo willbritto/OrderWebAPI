@@ -11,6 +11,7 @@ namespace OrderWebAPI.DTOs.Mappings
         {
             CreateMap<CategoryDTO, CategoryModel>().ReverseMap();
             CreateMap<OrderDTO, OrderModel>().ReverseMap();
+            CreateMap<OrderDTO, PrintDTO>().ReverseMap();
         }
 
     }
