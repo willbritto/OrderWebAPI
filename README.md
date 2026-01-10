@@ -138,14 +138,36 @@ Isso mantém os Controllers limpos e padroniza as respostas da API.
 
 ---
 
-## 🐳 Docker (Planejado)
+## 🐳 Rodando o projeto com Docker 
 
-O projeto está preparado para containerização com:
+* Pré-requisitos
 
-* SQL Server
-* ASP.NET Core
+Docker Desktop instalado e em execução
 
-(Dockerfile e docker-compose serão adicionados futuramente)
+* Subir a aplicação
+
+Na raiz do projeto, execute:
+```
+docker compose up --build
+```
+A aplicação estará disponível em:
+
+```
+http://localhost:5000/swagger
+```
+
+## 🗄️ Banco de Dados
+
+* O banco de dados é um SQL Server rodando em container Docker
+* Nenhuma dependência de banco local
+* Configuração feita via variáveis de ambiente
+
+Connection String utilizada internamente:
+
+```
+ Server=db;Database=OrderDB;User=sa;Password=DevStrong@123;TrustServerCertificate=True
+```
+⚠️ Essa senha é apenas para ambiente de desenvolvimento/local.
 
 ---
 
