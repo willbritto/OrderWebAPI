@@ -82,6 +82,9 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository , CategoryRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
+//Docker - SQLServer
+builder.Configuration.AddEnvironmentVariables();
+
 //AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingsProfile));
 

@@ -39,7 +39,7 @@ namespace OrderWebAPI.Controllers
         /// cref="NotFoundResult"/> if the order does not exist.</returns>
 
         [Authorize]
-        [HttpGet("Printer/{id}")]
+        [HttpGet("{id}/print")]
         public async Task<IActionResult> PrinterOrder(int id)
         {
             _logger.LogInformation("\n =============================");
