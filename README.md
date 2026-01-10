@@ -138,32 +138,29 @@ Isso mantém os Controllers limpos e padroniza as respostas da API.
 
 ---
 
-## 🐳 Docker (Planejado)
+## 🐳 Rodando o projeto com Docker 
 
-Pré-requisitos
+* Pré-requisitos
 
 Docker Desktop instalado e em execução
 
-Subir a aplicação
+* Subir a aplicação
 
 Na raiz do projeto, execute:
-
+```
 docker compose up --build
-
-
+```
 A aplicação estará disponível em:
 
 ```
 http://localhost:5000/swagger
 ```
 
-🗄️ Banco de Dados
+## 🗄️ Banco de Dados
 
-O banco de dados é um SQL Server rodando em container Docker
-
-Nenhuma dependência de banco local
-
-Configuração feita via variáveis de ambiente
+* O banco de dados é um SQL Server rodando em container Docker
+* Nenhuma dependência de banco local
+* Configuração feita via variáveis de ambiente
 
 Connection String utilizada internamente:
 
