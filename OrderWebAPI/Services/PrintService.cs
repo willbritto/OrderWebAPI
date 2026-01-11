@@ -8,7 +8,7 @@ namespace OrderWebAPI.Services
 {
     public class PrintService : IPrintService
     {
-        public byte[] GenerateOrderPdf(PrintDTO printDTO)
+        public byte[] GenerateOrderPdf(OrderDTO order)
         {
             using var ms = new MemoryStream();
             var document = new PdfDocument();
@@ -16,15 +16,15 @@ namespace OrderWebAPI.Services
             var gfx = XGraphics.FromPdfPage(page);
             var font = new XFont("Verdana", 12);
 
-            gfx.DrawString($"Ordem de serviço #{printDTO.NumOrder}", font, XBrushes.Black, new XPoint(40, 40));
-            gfx.DrawString($"Cliente : {printDTO.NameFull}" , font, XBrushes.Black, new XPoint(40, 70));
-            gfx.DrawString($"Data : {printDTO.Date}" , font, XBrushes.Black, new XPoint(40, 100));
+            gfx.DrawString($"Ordem de serviço #{order.NumOrder}", font, XBrushes.Black, new XPoint(40, 40));
+            gfx.DrawString($"Cliente : {order.NameFull}" , font, XBrushes.Black, new XPoint(40, 70));
+            gfx.DrawString($"Data : {order.Date}" , font, XBrushes.Black, new XPoint(40, 100));
 
             int y = 140;
 
-            gfx.DrawString($"Descrição : {printDTO.Description}", font, XBrushes.Black, new XPoint(40, y));
+            gfx.DrawString($"Descrição : {order.Description}", font, XBrushes.Black, new XPoint(40, y));
             y += 30;
-            gfx.DrawString($"Preço : {printDTO.Price:C}", font, XBrushes.Black, new XPoint(40, y));
+            gfx.DrawString($"Preço : {order.Price:C}", font, XBrushes.Black, new XPoint(40, y));
             y += 30;           
 
             document.Save(ms, false);

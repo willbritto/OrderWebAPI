@@ -48,11 +48,9 @@ namespace OrderWebAPI.Controllers
 
             var order = await _serviceOrder.GetById(id);
             if (order == null)
-                return NotFound($"Order [{id}] not found");
+                return NotFound($"Order [{id}] not found");            
 
-            var printDto = _mapper.Map<PrintDTO>(order);
-
-            var pdfBytes = _printService.GenerateOrderPdf(printDto);
+            var pdfBytes = _printService.GenerateOrderPdf(order);
             return File(pdfBytes, "application/pdf", $"Order_{id}.pdf");
         }
 

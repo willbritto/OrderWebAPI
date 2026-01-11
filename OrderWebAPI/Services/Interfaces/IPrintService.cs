@@ -5,6 +5,6 @@ namespace OrderWebAPI.Services.Interfaces
 {
     public interface IPrintService
     {
-        byte[] GenerateOrderPdf(PrintDTO printDTO);
+        byte[] GenerateOrderPdf(OrderDTO order);
     }
 }
