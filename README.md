@@ -138,34 +138,18 @@ Isso mantém os Controllers limpos e padroniza as respostas da API.
 
 ---
 
-## 🐳 Rodando o projeto com Docker 
+## 🐳 Docker (Em construção)
 
-* Pré-requisitos
-
-Docker Desktop instalado e em execução
-
-* Subir a aplicação
-
-Na raiz do projeto, execute:
-```
-docker compose up --build
-```
-A aplicação estará disponível em:
-
-```
-http://localhost:5000/swagger
-```
+Em breve implementarei o docker no projeto
 
 ## 🗄️ Banco de Dados
 
-* O banco de dados é um SQL Server rodando em container Docker
-* Nenhuma dependência de banco local
-* Configuração feita via variáveis de ambiente
+* O banco de dados é um SQL Server
 
-Connection String utilizada internamente:
+> Exemplo de Connection String utilizada internamente:
 
 ```
- Server=db;Database=OrderDB;User=sa;Password=DevStrong@123;TrustServerCertificate=True
+server=localhost;database=nomeDatabse; trusted_connection=true; trustservercertificate=true
 ```
 ⚠️ Essa senha é apenas para ambiente de desenvolvimento/local.
 
