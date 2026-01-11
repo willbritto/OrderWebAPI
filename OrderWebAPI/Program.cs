@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -81,9 +82,6 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository , CategoryRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-
-//Docker - SQLServer
-builder.Configuration.AddEnvironmentVariables();
 
 //AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingsProfile));
@@ -174,7 +172,6 @@ app.UseHttpsRedirection();
 
 //MiddleException
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-
 
 app.UseCors(); //CORS
 app.UseAuthentication();
