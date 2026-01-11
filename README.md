@@ -144,14 +144,11 @@ Em breve implementarei o docker no projeto
 
 ## 🗄️ Banco de Dados
 
-* O banco de dados é um SQL Server rodando em container Docker
-* Nenhuma dependência de banco local
-* Configuração feita via variáveis de ambiente
-
-Connection String utilizada internamente:
+* O banco de dados é um SQL Server
+Exemplo de Connection String utilizada internamente:
 
 ```
- Server=db;Database=OrderDB;User=sa;Password=DevStrong@123;TrustServerCertificate=True
+server=localhost;database=nomeDatabse; trusted_connection=true; trustservercertificate=true
 ```
 ⚠️ Essa senha é apenas para ambiente de desenvolvimento/local.
 
