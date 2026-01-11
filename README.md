@@ -145,7 +145,8 @@ Em breve implementarei o docker no projeto
 ## 🗄️ Banco de Dados
 
 * O banco de dados é um SQL Server
-Exemplo de Connection String utilizada internamente:
+
+> Exemplo de Connection String utilizada internamente:
 
 ```
 server=localhost;database=nomeDatabse; trusted_connection=true; trustservercertificate=true
