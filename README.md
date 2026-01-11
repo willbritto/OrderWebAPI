@@ -138,23 +138,9 @@ Isso mantém os Controllers limpos e padroniza as respostas da API.
 
 ---
 
-## 🐳 Rodando o projeto com Docker 
+## 🐳 Docker (Em construção)
 
-* Pré-requisitos
-
-Docker Desktop instalado e em execução
-
-* Subir a aplicação
-
-Na raiz do projeto, execute:
-```
-docker compose up --build
-```
-A aplicação estará disponível em:
-
-```
-http://localhost:5000/swagger
-```
+Em breve implementarei o docker no projeto
 
 ## 🗄️ Banco de Dados
 
