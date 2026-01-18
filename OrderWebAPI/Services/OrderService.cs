@@ -36,12 +36,14 @@ public class OrderService : IOrderService
         return orderId;
     }
 
-    public async Task<OrderDTO> GetByName(string name) 
+    public async Task<IEnumerable<OrderDTO>> GetByName(string name)
     {
+                 
+
         var nameOrder = await _repo.GetByName(name);
-        if (nameOrder == null)
+        if (nameOrder == null || !nameOrder.Any())
             throw new KeyNotFoundException($"Name [{name}] order not found");
-        var orderName = _mapper.Map<OrderDTO>(nameOrder);
+        var orderName = _mapper.Map<IEnumerable<OrderDTO>>(nameOrder);
         return orderName;
     }
 

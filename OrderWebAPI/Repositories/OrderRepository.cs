@@ -25,10 +25,14 @@ namespace OrderWebAPI.Repositories
             return order;
         }
 
-        public async Task<OrderModel> GetByName(string name)
+        public async Task<IEnumerable<OrderModel>> GetByName(string name)
         {
-            var ordername = await _context.orderModels.FirstOrDefaultAsync(n => n.NameFull == name);
-            return ordername;
+            var orderName = await _context.orderModels
+                .Where(n => n.NameFull
+                .Contains(name))
+                .ToListAsync();
+
+            return orderName;
         }
 
         public async Task<OrderModel> CreateAsync(OrderModel model)

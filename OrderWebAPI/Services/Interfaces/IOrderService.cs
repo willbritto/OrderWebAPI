@@ -11,7 +11,7 @@ public interface IOrderService
     Task<OrderDTO> GetById(int id);
 
     //Filter in Name
-    Task<OrderDTO> GetByName(string name);
+    Task<IEnumerable<OrderDTO>> GetByName(string name);
 
     Task<OrderDTO> CreateAsync(OrderDTO orderDTO);
     Task<OrderDTO> UpdateAsync(int id , OrderDTO orderDTO);
