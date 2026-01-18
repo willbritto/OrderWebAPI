@@ -97,7 +97,18 @@ namespace OrderWebAPI.Controllers
         /// <returns>An <see cref="IActionResult"/> containing the order details if found; otherwise, a result indicating that
         /// the order was not found.</returns>
 
-        
+        [Authorize]
+        [HttpGet("name/{name}")]
+        public async Task<IActionResult> GetOrderByName(string name)
+        {
+            _logger.LogInformation("\n ============================");
+            _logger.LogInformation($" == Filter order by Name /GetOrderByName/{name}");
+            _logger.LogInformation(" ==============================\n");
+
+            var orderName = await _serviceOrder.GetByName(name);
+            return Ok(orderName);
+
+        }
 
         /// <summary>
         /// Creates a new order based on the specified order details.
