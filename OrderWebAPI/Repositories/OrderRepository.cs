@@ -25,6 +25,12 @@ namespace OrderWebAPI.Repositories
             return order;
         }
 
+        public async Task<OrderModel> GetByName(string name)
+        {
+            var ordername = await _context.orderModels.FirstOrDefaultAsync(n => n.NameFull == name);
+            return ordername;
+        }
+
         public async Task<OrderModel> CreateAsync(OrderModel model)
         {
             _context.Add(model);

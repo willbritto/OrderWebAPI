@@ -48,7 +48,7 @@ namespace OrderWebAPI.Controllers
 
             var order = await _serviceOrder.GetById(id);
             if (order == null)
-                return NotFound($"Order [{id}] not found");            
+                return NotFound($"Order [{id}] not found");
 
             var pdfBytes = _printService.GenerateOrderPdf(order);
             return File(pdfBytes, "application/pdf", $"Order_{id}.pdf");
@@ -88,6 +88,26 @@ namespace OrderWebAPI.Controllers
 
             var order = await _serviceOrder.GetById(id);
             return Ok(order);
+        }
+
+        /// <summary>
+        /// Returns service order by its name.
+        /// </summary>
+        /// <param name="name">The unique identifier of the order to retrieve.</param>
+        /// <returns>An <see cref="IActionResult"/> containing the order details if found; otherwise, a result indicating that
+        /// the order was not found.</returns>
+
+        [Authorize]
+        [HttpGet("name/{name}")]
+        public async Task<IActionResult> GetOrderByName(string name)
+        {
+            _logger.LogInformation("\n ============================");
+            _logger.LogInformation($" == Filter order by Name /GetOrderByName/{name}");
+            _logger.LogInformation(" ==============================\n");
+
+            var orderName = await _serviceOrder.GetByName(name);
+            return Ok(orderName);
+
         }
 
         /// <summary>

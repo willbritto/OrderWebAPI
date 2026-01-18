@@ -136,8 +136,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllSpecificOrign", 
         policy => 
         {
-            policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); //CORS aberto apenas para teste da aplicacão.
-            //policy.WithOrigins("https://localhost:7175", "http://localhost:5192").AllowAnyHeader().AllowAnyMethod(); //Obrigatoriamente utilizar esse CORS em produção.
+            //policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); //CORS aberto apenas para teste da aplicacão.
+            policy.WithOrigins("https://localhost:7175", "http://localhost:5192").AllowAnyHeader().AllowAnyMethod(); //Obrigatoriamente utilizar esse CORS em produção.
         });
 });
 
