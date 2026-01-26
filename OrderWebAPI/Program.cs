@@ -30,17 +30,17 @@ builder.Services.AddEndpointsApiExplorer();
 //Autorizacao para acesso dos endpoints do controllador
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo 
-    { 
-      Title = "APIOrder",
-      Version = "v1",
-      Description = "Venda e Orçamentos para serviços",
-      Contact = new OpenApiContact 
-      {
-          Name = "Ailson",
-          Email = "alfatechvaa@gmail.com",
-      }
-    
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "APIOrder",
+        Version = "v1",
+        Description = "Venda e Orçamentos para serviços",
+        Contact = new OpenApiContact
+        {
+            Name = "Ailson",
+            Email = "alfatechvaa@gmail.com",
+        }
+
     });
 
     //XML
@@ -80,7 +80,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPrintService, PrintService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<ICategoryRepository , CategoryRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 //AutoMapper
@@ -91,7 +91,7 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .Enrich.With(new ThreadIdEnricher())
     .WriteTo.File("log_OrderAPI.txt")
-    .WriteTo.Console(outputTemplate : "{Timestamp:HH:mm} [{Level}] ({ThreadId}) {Message}{NewLine}{Exception}")
+    .WriteTo.Console(outputTemplate: "{Timestamp:HH:mm} [{Level}] ({ThreadId}) {Message}{NewLine}{Exception}")
     .CreateLogger();
 
 //Debugging and Diagnostics
@@ -100,9 +100,21 @@ Serilog.Debugging.SelfLog.Enable(TextWriter.Synchronized(file));
 
 builder.Host.UseSerilog();
 
+
+
+
 //Connection SQLServer
-var connectionStringSQL = builder.Configuration.GetConnectionString("DefaultConnectionDB");
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionStringSQL)
+//var connectionStringSQL = builder.Configuration.GetConnectionString("DefaultConnectionDB");
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionDB"), sqlOptions =>
+{
+    sqlOptions.EnableRetryOnFailure(
+
+        maxRetryCount: 5,
+        maxRetryDelay: TimeSpan.FromSeconds(10),
+        errorNumbersToAdd: null
+
+        );
+})
 .EnableSensitiveDataLogging()
 .LogTo(Console.WriteLine, LogLevel.Information));
 
@@ -131,20 +143,27 @@ builder.Services.AddAuthentication(options =>
 });
 
 //CORS
-builder.Services.AddCors(options => 
+builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllSpecificOrign", 
-        policy => 
+    options.AddPolicy("AllSpecificOrign",
+        policy =>
         {
             //policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); //CORS aberto apenas para teste da aplicacão.
             policy.WithOrigins("https://localhost:7175", "http://localhost:5192").AllowAnyHeader().AllowAnyMethod(); //Obrigatoriamente utilizar esse CORS em produção.
         });
 });
 
-//Rate Limiting
-builder.Services.AddRateLimiter(op => 
+//Docker
+builder.WebHost.ConfigureKestrel(options =>
 {
-    op.AddFixedWindowLimiter("fixedRL", RateLimiterOptions => 
+    options.ListenAnyIP(8080);
+});
+
+
+//Rate Limiting
+builder.Services.AddRateLimiter(op =>
+{
+    op.AddFixedWindowLimiter("fixedRL", RateLimiterOptions =>
     {
         RateLimiterOptions.PermitLimit = 5;
         RateLimiterOptions.Window = TimeSpan.FromSeconds(10);
@@ -159,10 +178,17 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => 
+    app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "APIOrder");
     });
+}
+
+//Docker
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
 }
 app.UseRateLimiter();
 

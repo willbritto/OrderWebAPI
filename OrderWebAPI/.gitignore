@@ -17,6 +17,9 @@ appsettings.Development.json
 appsettings.Local.json
 appsettings.Production.json
 
+#Docker
+docker-compose.yml
+
 # Environment and secrets
 .env
 secrets.json
