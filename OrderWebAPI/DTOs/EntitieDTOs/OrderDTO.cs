@@ -2,8 +2,9 @@
 
 namespace OrderWebAPI.DTOs.EntitieDTOs
 {
-    public class OrderDTO
+    public class OrderDTO 
     {
+       
         public int NumOrder { get; set; }
         public string NameFull { get; set; }
 
