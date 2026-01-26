@@ -140,7 +140,15 @@ Isso mantém os Controllers limpos e padroniza as respostas da API.
 
 ## 🐳 Docker (Em construção)
 
-Em breve implementarei o docker no projeto
+Implementado o documento Dockerfile e docker-compose
+Utilizado a porta 5001
+
+* Comandos para reiniciar o docker
+
+   ```
+  docker-compose down
+  docker-compose up --build
+  ```
 
 ## 🗄️ Banco de Dados
 
